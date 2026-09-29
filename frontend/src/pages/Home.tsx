@@ -17,6 +17,7 @@ const STYLES: { value: Style; label: string; emoji: string; hint: string }[] = [
   { value: "budget", label: "Budget", emoji: "🎒", hint: "Hostels, trains, street food" },
   { value: "balanced", label: "Balanced", emoji: "🧳", hint: "Good value, a few treats" },
   { value: "comfort", label: "Comfort", emoji: "🛎️", hint: "Nicer stays, fewer hassles" },
+  { value: "luxury", label: "Luxury", emoji: "🥂", hint: "5★ stays, fine dining" },
 ];
 
 const INTERESTS: { value: Interest; label: string }[] = [
@@ -207,7 +208,7 @@ export default function Home() {
 
           <div>
             <span className="label">Travel style</span>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {STYLES.map((s) => (
                 <button key={s.value} type="button" onClick={() => set("style", s.value)}
                   className={`rounded-xl border p-2.5 text-left transition ${form.style === s.value ? "border-sea-500 bg-sea-50 ring-4 ring-sea-100" : "border-line hover:border-sea-500"}`}>

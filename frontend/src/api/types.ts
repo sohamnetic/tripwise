@@ -1,6 +1,6 @@
 // Mirrors backend/app/models/schemas.py
 
-export type Style = "budget" | "balanced" | "comfort";
+export type Style = "budget" | "balanced" | "comfort" | "luxury";
 export type Mode = "flight" | "train" | "bus";
 export type TransportPref = "any" | Mode;
 export type Interest = "beaches" | "food" | "history" | "nightlife" | "nature" | "shopping" | "adventure";

@@ -18,10 +18,12 @@ def _hotel_upgrades(req: TripRequest, current: Hotel, hotels: list[Hotel], budge
     better = [
         h for h in hotels
         if h.id != current.id
-        and (h.stars > current.stars or h.rating >= current.rating + 0.2)
+        and (h.stars > current.stars or h.rating >= current.rating + 0.2
+             # on Luxury, a much pricier stay of the same class is the "more premium" option
+             or (req.style == "luxury" and h.stars >= current.stars >= 4 and h.nightly_price >= 1.5 * current.nightly_price))
         and 0 < h.total_price - current.total_price <= budget_left
     ]
-    better.sort(key=lambda h: (h.stars, h.rating), reverse=True)
+    better.sort(key=lambda h: (h.stars, h.rating, h.nightly_price), reverse=True)
     out = []
     for h in better[: CANDIDATES_PER_KIND["hotel"]]:
         perks = ", ".join(h.amenities[:3])
@@ -30,7 +32,7 @@ def _hotel_upgrades(req: TripRequest, current: Hotel, hotels: list[Hotel], budge
             title = f"Upgrade to {'an' if kind[0] in 'aeiou' else 'a'} {kind}"
             detail = f"{h.stars}★ · typical price. Choose the actual hotel on Booking.com."
         else:
-            title = f"Stay at {h.name}"
+            title = f"{'Go luxury: stay' if h.stars >= 5 else 'Stay'} at {h.name}"
             detail = f"{h.stars}★ · rated {h.rating} · {h.area}" + (f" · {perks}" if perks else "")
         out.append(Upgrade(
             id=f"hotel:{h.id}", kind="hotel", title=title, detail=detail,

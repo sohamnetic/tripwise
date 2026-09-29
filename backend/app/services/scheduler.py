@@ -20,7 +20,8 @@ DINNER_AT = time(20, 0)
 ROAD_FACTOR, CITY_SPEED_KMPH = 1.3, 30
 # Local travel by style: (₹ per km per vehicle, people per vehicle, minimum fare per leg).
 # Budget ≈ scooter / shared transport, balanced ≈ app cab, comfort ≈ private car.
-LOCAL_RATE = {"budget": (5, 2, 30), "balanced": (16, 4, 80), "comfort": (24, 4, 120)}
+# Luxury ≈ a chauffeured SUV for 3.
+LOCAL_RATE = {"budget": (5, 2, 30), "balanced": (16, 4, 80), "comfort": (24, 4, 120), "luxury": (32, 3, 200)}
 BREAKFAST_PP = 150
 WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 
@@ -30,7 +31,8 @@ KM_PER_RATING_POINT = 2.5
 REUSED_RESTAURANT_PENALTY = 400  # ₹ per previous visit, so meals vary even when few places are close
 MEAL_RADIUS_KM = 6
 # Restaurant choice by style: (weight on price, ₹ value of one rating point)
-MEAL_WEIGHTS = {"budget": (1.0, 40), "balanced": (0.6, 200), "comfort": (0.2, 500)}
+# Luxury's negative price weight favours the upscale end (fine dining), up to the meal's cap.
+MEAL_WEIGHTS = {"budget": (1.0, 40), "balanced": (0.6, 200), "comfort": (0.2, 500), "luxury": (-0.3, 800)}
 TREAT_MEAL_WEIGHTS = (0.0, 1500)  # "treat yourself" dinners: rating is all that matters
 PLACE_OVERHEAD_MIN = 35  # travel + slack per stop when sizing a day
 CLUSTER_KM = 15  # a day's places stay within this road distance of its anchor

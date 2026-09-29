@@ -19,7 +19,7 @@ import { useCountUp } from "../lib/hooks";
 import { withoutPicks } from "../lib/overrides";
 import { vibeFor } from "../lib/vibes";
 
-const STYLE_ORDER: Style[] = ["budget", "balanced", "comfort"];
+const STYLE_ORDER: Style[] = ["budget", "balanced", "comfort", "luxury"];
 
 function Section({ title, subtitle, children }: { title: string; subtitle?: string; children: ReactNode }) {
   return (
@@ -93,7 +93,7 @@ export default function TripPlan() {
   const variant = (factor: number, styleStep: number): TripRequest => ({
     ...withoutPicks(req),
     budget: Math.round((req.budget * factor) / 1000) * 1000,
-    style: STYLE_ORDER[Math.min(2, Math.max(0, styleIdx + styleStep))],
+    style: STYLE_ORDER[Math.min(STYLE_ORDER.length - 1, Math.max(0, styleIdx + styleStep))],
   });
   const cheaper = variant(0.75, -1);
   const fancier = variant(1.4, +1);
@@ -182,7 +182,7 @@ export default function TripPlan() {
             💸 Cheaper version ({rupees(cheaper.budget)})
           </button>
           <button className="chip border-line bg-white hover:border-sea-500" onClick={() => replan(fancier)}>
-            ✨ More comfort ({rupees(fancier.budget)})
+            {req.style === "luxury" ? "✨ More luxury" : fancier.style === "luxury" ? "🥂 Go luxury" : "✨ More comfort"} ({rupees(fancier.budget)})
           </button>
         </div>
 

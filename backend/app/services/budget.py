@@ -10,12 +10,14 @@ SPLITS: dict[str, dict[str, float]] = {
     "budget":   {"stay": 0.40, "food": 0.25, "activities": 0.15, "local": 0.10, "buffer": 0.10},
     "balanced": {"stay": 0.45, "food": 0.20, "activities": 0.15, "local": 0.10, "buffer": 0.10},
     "comfort":  {"stay": 0.50, "food": 0.18, "activities": 0.15, "local": 0.10, "buffer": 0.07},
+    "luxury":   {"stay": 0.55, "food": 0.22, "activities": 0.10, "local": 0.08, "buffer": 0.05},
 }
 # How much one hour of travel time is "worth" per person when comparing transport options.
-TIME_VALUE_PER_HOUR = {"budget": 60, "balanced": 250, "comfort": 600}
+TIME_VALUE_PER_HOUR = {"budget": 60, "balanced": 250, "comfort": 600, "luxury": 1200}
 TRAIN_CLASS_DISCOMFORT = {
-    "Sleeper (SL)": {"budget": 0, "balanced": 60, "comfort": 150},
-    "AC 3-tier (3A)": {"budget": 0, "balanced": 0, "comfort": 40},
+    "Sleeper (SL)": {"budget": 0, "balanced": 60, "comfort": 150, "luxury": 400},
+    "AC 3-tier (3A)": {"budget": 0, "balanced": 0, "comfort": 40, "luxury": 150},
+    "AC 2-tier (2A)": {"luxury": 40},
 }
 # Largest share of the budget that transport may take before we switch to the cheapest option.
 MAX_TRANSPORT_SHARE = 0.55
@@ -24,6 +26,9 @@ HOTEL_WEIGHTS = {
     "budget": {"stars": 0.1, "price": 3.0},
     "balanced": {"stars": 0.6, "price": 0.5},
     "comfort": {"stars": 1.2, "price": 0.0},
+    # One extra star outweighs any difference in rating, so a 5★ wins whenever it's affordable;
+    # among equals, a pricier (more premium) stay scores a little higher.
+    "luxury": {"stars": 2.5, "price": -2.0},
 }
 KM_PENALTY = 0.12  # score points per km of average distance to the top sights
 MIN_FOOD_PER_PERSON_DAY = 500
@@ -174,6 +179,22 @@ def plan_budget(req: TripRequest, outbound, inbound, hotels: list[Hotel], places
     return BudgetDecision(out, back, alternatives, hotel, hotel_alts, alloc, warnings)
 
 
+def _luxury_notes(pick: Hotel, hotels: list[Hotel], stay_alloc: int) -> list[str]:
+    """Say so when a Luxury budget can't reach a 5★ stay, and roughly how much more it would take
+    (only the stay share of any extra budget goes to the hotel)."""
+    if pick.stars >= 5:
+        return []
+    five = [h for h in hotels if h.stars >= 5]
+    if not five:
+        return ["No 5★ hotels came up for these dates, so this is the best-rated stay we found."]
+    cheapest = min(five, key=lambda h: h.total_price)
+    more = math.ceil((cheapest.total_price - stay_alloc) / SPLITS["luxury"]["stay"] / 1000) * 1000
+    if more <= 0:  # affordable, but rated too low to pick
+        return []
+    got = f"a {pick.stars}★ stay" if pick.stars else "the best-rated stay we could"
+    return [f"Your budget gets {got}. About ₹{more:,} more would get the cheapest 5★ here ({cheapest.name})."]
+
+
 def plan_default_budget(req: TripRequest, outbound, inbound, hotels: list[Hotel], places: list[Place] = ()) -> BudgetDecision:
     out, back, alternatives, warnings = choose_transport(req, outbound, inbound)
     transport = out.total_price + back.total_price
@@ -189,6 +210,8 @@ def plan_default_budget(req: TripRequest, outbound, inbound, hotels: list[Hotel]
     alloc["transport"] = transport
 
     hotel, hotel_alts, fits = choose_hotel(hotels, alloc["stay"], req.style, places)
+    if req.style == "luxury":
+        warnings += _luxury_notes(hotel, hotels, alloc["stay"])
     diff = alloc["stay"] - hotel.total_price
     if not fits:
         warnings.append("Even the cheapest stay is above the planned stay budget; we trimmed other categories to fit.")

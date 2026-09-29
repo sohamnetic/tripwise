@@ -5,6 +5,7 @@ place type and flagged `fee_is_estimate`.
 """
 
 import asyncio
+import logging
 import re
 import unicodedata
 from datetime import date
@@ -14,6 +15,8 @@ from ..services import links
 from .base import ProviderError, serpapi
 from .destination import DestinationData
 from .geocode import haversine_km
+
+log = logging.getLogger(__name__)
 
 HOTELS_TTL_HOURS = 12
 PLACES_TTL_HOURS = 24 * 30  # sights and restaurants barely change, so one search lasts a month
@@ -275,6 +278,7 @@ HOTEL_TIERS = [
     ("Budget hotel or guesthouse", 2, 1500, 3500),
     ("Mid-range hotel", 3, 3200, 6500),
     ("Upscale hotel", 4, 6500, 12000),
+    ("Luxury 5★ hotel", 5, 12000, 25000),
 ]
 
 
@@ -327,7 +331,9 @@ async def fetch_live(city: City, checkin: date, checkout: date, pax: int) -> Des
         from .open_places import fetch_open
         try:
             open_places, open_tags, open_food, credits = await fetch_open(city)
-        except ProviderError:
+        except Exception as e:  # a bug or odd data in open sources shouldn't crash the whole plan
+            if not isinstance(e, ProviderError):
+                log.exception("open data failed for %s", city.name)
             raise ProviderError(
                 f"We've used today's live searches and couldn't find enough about {city.name} in open data. "
                 "Try again tomorrow, or pick a nearby destination."

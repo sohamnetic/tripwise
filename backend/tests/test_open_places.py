@@ -93,3 +93,19 @@ def test_real_saved_responses(monkeypatch, city, expect):
     assert all(p.area and "taluk" not in p.area.lower() for p in places)
     assert all("&nbsp;" not in p.description for p in places)
     assert len({p.name.lower() for p in places}) == len(places)
+
+
+def test_osm_names_that_are_numbers_are_skipped():
+    from app.providers.open_places import parse_geo_restaurants
+    kolkata = resolve_city("Kolkata")
+    feat = lambda name: {"properties": {"name": name, "lat": 22.5, "lon": 88.3, "place_id": "x", "categories": ["catering.restaurant"]}}
+    rests = parse_geo_restaurants({"features": [feat(6), feat(""), feat("Peter Cat")]}, kolkata)
+    assert [r.name for r in rests] == ["Peter Cat"]
+
+
+def test_the_destination_itself_isnt_a_sight():
+    dubai = resolve_city("Dubai")
+    raw = {"results": {"bindings": [_row("Q612", "Dubai", "city|tourist attraction", 200, 25.2, 55.3),
+                                     _row("Q12495", "Burj Khalifa", "skyscraper|tourist attraction", 90, 25.19, 55.27)]}}
+    places, _, _ = parse_wikidata(raw, dubai)
+    assert [p.name for p in places] == ["Burj Khalifa"]

@@ -5,7 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, model_validator
 
-Style = Literal["budget", "balanced", "comfort"]
+Style = Literal["budget", "balanced", "comfort", "luxury"]
 Mode = Literal["flight", "train", "bus"]
 TransportPref = Literal["any", "flight", "train", "bus"]
 Interest = Literal["beaches", "food", "history", "nightlife", "nature", "shopping", "adventure"]

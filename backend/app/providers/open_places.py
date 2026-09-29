@@ -86,7 +86,8 @@ def parse_wikidata(raw: dict, city: City) -> tuple[list[Place], dict[str, list[s
     for b in (raw.get("results") or {}).get("bindings") or []:
         qid = b["item"]["value"].rsplit("/", 1)[-1]
         name = b.get("itemLabel", {}).get("value", "")
-        if qid in seen or not name or re.fullmatch(r"Q\d+", name):
+        # skip unnamed items and the destination itself ("Dubai" isn't a sight in Dubai)
+        if qid in seen or not name or re.fullmatch(r"Q\d+", name) or name.lower() in (city.name.lower(), city.state.lower()):
             continue
         seen.add(qid)
         types = [t for t in b.get("types", {}).get("value", "").split("|") if t]
@@ -216,7 +217,7 @@ def parse_geo_beaches(raw: dict, city: City, settlements: list[tuple[str, int, f
     places = []
     for feat in raw.get("features") or []:
         p = feat.get("properties") or {}
-        if not p.get("name"):
+        if not isinstance(p.get("name"), str) or not p["name"].strip():  # OSM names are sometimes bare numbers
             continue
         name = clean_name(p["name"], city)
         words = set(re.findall(r"[a-z]+", name.lower())) - {"beach", "the", "of"}
@@ -237,7 +238,7 @@ def parse_geo_restaurants(raw: dict, city: City) -> list[Restaurant]:
     for feat in raw.get("features") or []:
         p = feat.get("properties") or {}
         raw_tags = (p.get("datasource") or {}).get("raw") or {}
-        if not p.get("name"):
+        if not isinstance(p.get("name"), str) or not p["name"].strip():  # OSM names are sometimes bare numbers
             continue
         cuisines = [c.strip().replace("_", " ").lower() for c in str(raw_tags.get("cuisine", "")).split(";") if c.strip()]
         if (cuisines and all(SNACKS.search(c) for c in cuisines)) or SNACK_NAMES.search(p["name"]):

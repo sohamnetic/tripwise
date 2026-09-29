@@ -111,7 +111,7 @@ async def _hotels_down(params, ttl_hours, stale_days=0):
 def test_hotels_fall_back_to_typical_prices(live):
     with patch.object(live_destination, "serpapi", _hotels_down):
         data = asyncio.run(live_destination.fetch_live(GOA, START, END, 3))
-    assert [h.stars for h in data.hotels] == [2, 3, 4]
+    assert [h.stars for h in data.hotels] == [2, 3, 4, 5]
     h = data.hotels[0]
     assert h.is_estimate and h.rooms == 2 and h.total_price == h.nightly_price * 2 * 4
     assert h.links and "booking.com" in h.links[0].url
@@ -208,3 +208,11 @@ def test_ip_is_hashed_and_proxy_address_used():
     req = Request({"type": "http", "headers": [(b"x-forwarded-for", b"203.0.113.9, 10.0.0.1")], "client": ("10.0.0.1", 1)})
     cid = limits.client_id(req)
     assert "203.0.113.9" not in cid and cid == hashlib.sha256(b"tripwise:203.0.113.9").hexdigest()[:24]
+
+
+def test_a_bug_in_open_data_gives_a_message_not_a_crash(live):
+    async def broken(city):
+        raise TypeError("expected string or bytes-like object")
+    with patch.object(live_destination, "serpapi", _no_searches), patch.object(open_places, "fetch_open", broken), \
+            pytest.raises(ProviderError, match="Try again tomorrow"):
+        asyncio.run(live_destination.fetch_live(GOA, START, END, 2))
