@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from sqlmodel import Field, Session, SQLModel, create_engine
 
@@ -37,6 +37,17 @@ class ApiCall(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     provider: str = Field(index=True)
     at: datetime = Field(default_factory=utcnow, index=True)
+
+
+class RouteFare(SQLModel, table=True):
+    """The cheapest fare a live search found for one route on one travel date, so later
+    estimates for that route can use real prices. One row per route and date."""
+    id: str = Field(primary_key=True)  # "DEL-GOI-2026-12-10"
+    route: str = Field(index=True)  # "DEL-GOI"
+    travel_date: date
+    cheapest: int  # per person, among the flights with the fewest stops
+    duration_min: int
+    seen_at: datetime = Field(default_factory=utcnow, index=True)
 
 
 class PlanRequest(SQLModel, table=True):

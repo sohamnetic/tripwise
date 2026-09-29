@@ -9,6 +9,7 @@ from datetime import date, datetime
 
 from ..models.schemas import City, Link, TransportOption
 from ..services import links
+from . import fare_memory
 from .base import serpapi
 
 FLIGHTS_TTL_HOURS = 6
@@ -69,7 +70,9 @@ async def search_flights(o: City, d: City, start: date, end: date, pax: int):
     # Our own links, not SerpApi's google_flights_url: that one repeats our search (one-way, one
     # adult), whereas the traveller needs a return search for the whole group.
     booking = links.flight_links(o, d, start, end, pax)
-    return (
-        parse_flights(out_raw, o, d, pax, "out", booking),
-        parse_flights(in_raw, d, o, pax, "in", booking),
-    )
+    out_opts = parse_flights(out_raw, o, d, pax, "out", booking)
+    in_opts = parse_flights(in_raw, d, o, pax, "in", booking)
+    # so later estimates for these routes can use real prices
+    fare_memory.remember(o.iata, d.iata, start, out_opts)
+    fare_memory.remember(d.iata, o.iata, end, in_opts)
+    return out_opts, in_opts

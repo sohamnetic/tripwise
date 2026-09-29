@@ -10,6 +10,7 @@ from datetime import date, datetime, time, timedelta
 from ..config import get_settings
 from ..models.schemas import City, TransportOption
 from ..services import links
+from . import fare_memory
 from .base import ProviderError
 from .geocode import city_distance_km
 
@@ -66,13 +67,20 @@ ESTIMATE_RETURNS = [time(13, 30), time(19, 30)]
 
 
 def estimate_flights(o: City, d: City, day: date, pax: int, back: bool, out_date: date, back_date: date) -> list[TransportOption]:
-    """Typical fares from the distance, flagged as estimates. No airline or flight number,
-    since we don't know which flights run that day."""
+    """Typical fares, flagged as estimates: from real fares our live searches have seen on
+    this route if there are any, else from the distance. No airline or flight number, since we
+    don't know which flights run that day."""
     if not (o.iata and d.iata) or o.iata == d.iata:
         return []
-    km = city_distance_km(o, d)
-    base = _flight_fare(km, o.international or d.international)
-    minutes = int(35 + km / 13)  # ~780 km/h in the air plus taxiing; Kolkata–Goa ≈ 2h45m
+    seen = fare_memory.typical(o.iata, d.iata)
+    if seen:
+        base, minutes = seen.price, seen.duration_min
+        basis = f"typical fare from {seen.samples} real search{'es' if seen.samples > 1 else ''} on this route"
+    else:
+        km = city_distance_km(o, d)
+        base = _flight_fare(km, o.international or d.international)
+        minutes = int(35 + km / 13)  # ~780 km/h in the air plus taxiing; Kolkata–Goa ≈ 2h45m
+        basis = "typical fare"
     flink = links.flight_links(d if back else o, o if back else d, out_date, back_date, pax)
     opts = []
     for i, (label, dep, mult) in enumerate(ESTIMATE_FLIGHTS):
@@ -80,7 +88,7 @@ def estimate_flights(o: City, d: City, day: date, pax: int, back: bool, out_date
         pp = _round50(base * mult)
         opts.append(TransportOption(
             id=f"{'in' if back else 'out'}-flight-est-{i}", mode="flight", carrier="Any airline",
-            service=f"{label} · typical fare", from_city=o.name, to_city=d.name,
+            service=f"{label} · {basis}", from_city=o.name, to_city=d.name,
             depart=depart, arrive=depart + timedelta(minutes=minutes), duration_min=minutes,
             price_per_person=pp, total_price=pp * pax, is_estimate=True, links=flink,
         ))
