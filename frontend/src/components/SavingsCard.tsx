@@ -53,21 +53,24 @@ export default function SavingsCard({ plan, busy, onReplan }: Props) {
           {plan.upgrades.map((u) => {
             const after = s.remaining - u.extra_cost;
             return (
-              <li key={u.id} className="flex flex-wrap items-center gap-3 px-5 py-3.5 transition hover:bg-paper sm:flex-nowrap">
+              <li key={u.id} className="flex gap-3 px-4 py-3.5 transition hover:bg-paper sm:items-center sm:px-5">
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-paper text-xl">{KIND_ICON[u.kind]}</span>
-                <div className="min-w-0 flex-1">
-                  <div className="text-[11px] font-bold uppercase tracking-wide text-muted">{KIND_LABEL[u.kind]}</div>
-                  <div className="font-semibold leading-snug">{u.title}</div>
-                  <div className="text-sm text-muted">{u.detail}</div>
-                </div>
-                <div className="flex items-center gap-3 sm:flex-col sm:items-end sm:gap-1">
-                  <div className="text-right">
-                    <div className="font-extrabold text-ink">+{rupees(u.extra_cost)}</div>
-                    <div className="text-[11px] text-muted">{rupees(after)} still saved</div>
+                {/* phones: text on top, price + button on their own row below; wider screens: side by side */}
+                <div className="min-w-0 flex-1 sm:flex sm:items-center sm:gap-4">
+                  <div className="min-w-0 sm:flex-1">
+                    <div className="text-[11px] font-bold uppercase tracking-wide text-muted">{KIND_LABEL[u.kind]}</div>
+                    <div className="font-semibold leading-snug">{u.title}</div>
+                    <div className="text-sm text-muted">{u.detail}</div>
                   </div>
-                  <button className="btn-primary px-3 py-1.5 text-xs" disabled={busy} onClick={() => onReplan(withUpgrade(req, u.apply))}>
-                    Add to my trip
-                  </button>
+                  <div className="mt-2.5 flex items-center justify-between gap-3 sm:mt-0 sm:shrink-0 sm:flex-col sm:items-end sm:justify-normal sm:gap-1">
+                    <div className="sm:text-right">
+                      <div className="font-extrabold text-ink">+{rupees(u.extra_cost)}</div>
+                      <div className="text-[11px] text-muted">{rupees(after)} still saved</div>
+                    </div>
+                    <button className="btn-primary px-3.5 py-2 text-xs sm:py-1.5" disabled={busy} onClick={() => onReplan(withUpgrade(req, u.apply))}>
+                      Add to my trip
+                    </button>
+                  </div>
                 </div>
               </li>
             );
