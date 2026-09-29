@@ -41,10 +41,11 @@ export function useCities(q: string) {
   return useQuery({ queryKey: ["cities", q], queryFn: () => api.cities(q), staleTime: Infinity });
 }
 
-export function useJob(id: string) {
+export function useJob(id: string | undefined) {
   return useQuery({
     queryKey: ["job", id],
-    queryFn: () => api.job(id),
+    queryFn: () => api.job(id!),
+    enabled: !!id,
     refetchInterval: (q) => (q.state.data && ["done", "error"].includes(q.state.data.status) ? false : 1000),
   });
 }

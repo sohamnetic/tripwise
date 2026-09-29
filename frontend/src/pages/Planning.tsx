@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { useJob } from "../api/client";
+import { api, useJob } from "../api/client";
 import type { TripRequest } from "../api/types";
 import Scene from "../components/Scene";
 import { useRotate } from "../lib/hooks";
@@ -38,21 +38,43 @@ function Flight({ from, to }: { from: string; to: string }) {
   );
 }
 
+// /planning            → sends the request (state.request), then moves to /planning/:jobId
+// /planning/:jobId     → follows the job until the trip is ready
+// Locally the job runs in the background and reports real steps. On serverless hosting the
+// request only returns once the plan is ready, so meanwhile the steps advance on a timer.
 export default function Planning() {
-  const { jobId = "" } = useParams();
+  const { jobId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const request = (location.state as { request?: TripRequest } | null)?.request;
+  const creating = !jobId;
   const { data, error } = useJob(jobId);
   const tip = useRotate(TRAVEL_TIPS.length, 3500);
   const vibe = vibeFor(request?.destination);
+  const [createError, setCreateError] = useState<string | null>(null);
+  const started = useRef(false);
+  const simStep = useRotate(STEPS.length - 1, 1800, !creating, true); // counts up, stops short of the last step
+
+  useEffect(() => {
+    if (!creating) return;
+    if (!request) {
+      navigate("/", { replace: true });
+      return;
+    }
+    if (started.current) return; // StrictMode runs effects twice in development
+    started.current = true;
+    api
+      .createTrip(request)
+      .then(({ job_id }) => navigate(`/planning/${job_id}`, { replace: true, state: { request } }))
+      .catch((e: Error) => setCreateError(e.message));
+  }, [creating, request, navigate]);
 
   useEffect(() => {
     if (data?.status === "done" && data.trip_id) navigate(`/trip/${data.trip_id}`, { replace: true });
   }, [data, navigate]);
 
-  const failed = data?.status === "error" || error;
-  const progress = data?.progress ?? 0;
+  const failedMessage = createError ?? (data?.status === "error" ? data.error : null) ?? (error ? (error as Error).message : null);
+  const progress = creating ? STEPS[simStep].at : data?.progress ?? 0;
 
   return (
     <div className="relative min-h-[calc(100vh-56px)] overflow-hidden">
@@ -62,11 +84,11 @@ export default function Planning() {
       <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px]" />
       <div className="relative mx-auto max-w-lg px-4 py-12 md:py-16">
         <div className="card fade-up p-6 shadow-xl shadow-slate-900/10 md:p-8">
-          {failed ? (
+          {failedMessage ? (
             <>
               <div className="mb-3 text-4xl">😕</div>
               <h1 className="text-xl font-bold">We couldn't plan this trip</h1>
-              <p className="mt-2 text-muted">{data?.error ?? (error as Error)?.message}</p>
+              <p className="mt-2 text-muted">{failedMessage}</p>
               <Link to="/" state={location.state} className="btn-primary mt-6">← Change the trip</Link>
             </>
           ) : (

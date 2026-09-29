@@ -19,6 +19,7 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="planning" element={<Planning />} />
             <Route path="planning/:jobId" element={<Planning />} />
             <Route path="trip/:tripId" element={<TripPlan />} />
             <Route path="destinations" element={<Destinations />} />

@@ -50,13 +50,13 @@ export function useInView<T extends Element>() {
   return [ref, inView] as const;
 }
 
-/** Cycles through 0..n-1 every `ms`. */
-export function useRotate(n: number, ms: number) {
+/** Cycles through 0..n-1 every `ms`; with `stop`, counts up once to n-1 and stays there. */
+export function useRotate(n: number, ms: number, paused = false, stop = false) {
   const [i, setI] = useState(0);
   useEffect(() => {
-    if (n < 2) return;
-    const t = setInterval(() => setI((x) => (x + 1) % n), ms);
+    if (n < 2 || paused) return;
+    const t = setInterval(() => setI((x) => (stop ? Math.min(x + 1, n - 1) : (x + 1) % n)), ms);
     return () => clearInterval(t);
-  }, [n, ms]);
+  }, [n, ms, paused, stop]);
   return i;
 }

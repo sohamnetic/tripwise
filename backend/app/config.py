@@ -1,6 +1,8 @@
+import os
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
@@ -20,6 +22,9 @@ class Settings(BaseSettings):
 
     # Local SQLite by default; in production a Postgres URL (e.g. from Neon).
     database_url: str = f"sqlite:///{BACKEND_DIR / 'tripplanner.db'}"
+    # Serverless hosts (Vercel) may stop work that continues after the response, so there we
+    # plan the trip before answering. Vercel sets VERCEL=1, which turns this on automatically.
+    inline_jobs: bool = Field(default_factory=lambda: bool(os.environ.get("VERCEL")))
     # Which websites may call this API: comma-separated origins, plus an optional regex
     # (e.g. for Vercel preview deployments).
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"

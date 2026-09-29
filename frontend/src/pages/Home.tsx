@@ -1,7 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
 import { useRef, useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { api, useHealth } from "../api/client";
+import { useHealth } from "../api/client";
 import type { Interest, Style, TransportPref, TripRequest } from "../api/types";
 import CityInput from "../components/CityInput";
 import Reveal from "../components/Reveal";
@@ -99,10 +98,6 @@ export default function Home() {
   const inTab = destinationsWith(tab);
   const shown = showAll ? inTab : inTab.slice(0, EXPLORE_PAGE);
 
-  const create = useMutation({
-    mutationFn: api.createTrip,
-    onSuccess: ({ job_id }) => navigate(`/planning/${job_id}`, { state: { request: form } }),
-  });
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
@@ -111,7 +106,7 @@ export default function Home() {
     } catch {
       /* storage unavailable */
     }
-    create.mutate(form);
+    navigate("/planning", { state: { request: form } });
   };
 
   const toggleInterest = (i: Interest) =>
@@ -251,12 +246,9 @@ export default function Home() {
             </div>
           </div>
 
-          {create.error && <p className="rounded-xl bg-red-50 px-3.5 py-2.5 text-sm text-red-700">{create.error.message}</p>}
 
-          <button type="submit" className="btn-primary group w-full py-3.5 text-base shadow-lg shadow-sea-600/20" disabled={create.isPending || nights < 1}>
-            {create.isPending ? "Starting…" : (
-              <>Plan my trip to {form.destination || "…"} <span className="transition-transform group-hover:translate-x-1">→</span></>
-            )}
+          <button type="submit" className="btn-primary group w-full py-3.5 text-base shadow-lg shadow-sea-600/20" disabled={nights < 1}>
+            <>Plan my trip to {form.destination || "…"} <span className="transition-transform group-hover:translate-x-1">→</span></>
           </button>
         </form>
       </div>

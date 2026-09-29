@@ -1,7 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { api, useTrip } from "../api/client";
+import { useTrip } from "../api/client";
 import type { Style, TripRequest } from "../api/types";
 import BookingChecklist from "../components/BookingChecklist";
 import BudgetBreakdown from "../components/BudgetBreakdown";
@@ -63,10 +62,7 @@ export default function TripPlan() {
   const { data: plan, isLoading, error } = useTrip(tripId);
   const [activeDay, setActiveDay] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
-  const replan = useMutation({
-    mutationFn: api.createTrip,
-    onSuccess: ({ job_id }, request) => navigate(`/planning/${job_id}`, { state: { request } }),
-  });
+  const replan = (request: TripRequest) => navigate("/planning", { state: { request } });
 
   if (isLoading) return <Loading />;
   if (error || !plan)
@@ -165,19 +161,18 @@ export default function TripPlan() {
         )}
 
         <div className="no-print mt-5">
-          <SavingsCard plan={plan} busy={replan.isPending} onReplan={(r) => replan.mutate(r)} />
+          <SavingsCard plan={plan} busy={false} onReplan={replan} />
         </div>
 
         {/* replan */}
         <div className="no-print mt-4 flex flex-wrap items-center gap-2 text-sm">
           <span className="text-muted">Not quite right?</span>
-          <button className="chip border-line bg-white hover:border-sea-500" disabled={replan.isPending} onClick={() => replan.mutate(cheaper)}>
+          <button className="chip border-line bg-white hover:border-sea-500" onClick={() => replan(cheaper)}>
             💸 Cheaper version ({rupees(cheaper.budget)})
           </button>
-          <button className="chip border-line bg-white hover:border-sea-500" disabled={replan.isPending} onClick={() => replan.mutate(fancier)}>
+          <button className="chip border-line bg-white hover:border-sea-500" onClick={() => replan(fancier)}>
             ✨ More comfort ({rupees(fancier.budget)})
           </button>
-          {replan.error && <span className="text-coral-500">{replan.error.message}</span>}
         </div>
 
         <Section title="💰 Where the money goes">

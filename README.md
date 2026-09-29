@@ -87,6 +87,16 @@ With `DEMO_MODE=true` (the default), no paid API is called. Demo data covers **G
 
 To add another demo destination, drop a `backend/fixtures/<city>.json` file with the same shape as `goa.json`.
 
+## Deploy (all free, no card)
+
+| Part | Service | Settings |
+|---|---|---|
+| Database | Neon Postgres | copy the pooled connection string |
+| API | Vercel project, Root Directory `backend` | FastAPI is detected from `app/main.py`. Env: `DEMO_MODE=false`, `SERPAPI_KEY`, `DATABASE_URL`, `CORS_ORIGINS` |
+| Website | Vercel project, Root Directory `frontend` | Vite. Env: `VITE_API_URL` = the API project's URL |
+
+On Vercel (`VERCEL=1`) trip planning runs inside the request instead of in the background, because serverless functions may stop after responding. Locally it runs in the background and the loading screen shows real progress.
+
 ## Roadmap
 
 - [x] Step 1: skeleton, demo data end to end, budget engine, scheduler, plan UI, map, booking checklist

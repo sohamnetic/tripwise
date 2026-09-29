@@ -28,12 +28,15 @@ def cities(q: str = ""):
 
 
 @router.post("/trips", response_model=JobCreated, status_code=202)
-def create_trip(req: TripRequest, background: BackgroundTasks):
+async def create_trip(req: TripRequest, background: BackgroundTasks):
     job_id = uuid.uuid4().hex
     with get_session() as s:
         s.add(JobRecord(id=job_id, request_json=req.model_dump_json()))
         s.commit()
-    background.add_task(run_job, job_id, req)
+    if get_settings().inline_jobs:
+        await run_job(job_id, req)  # serverless: finish before responding; the job is already done
+    else:
+        background.add_task(run_job, job_id, req)
     return JobCreated(job_id=job_id)
 
 
