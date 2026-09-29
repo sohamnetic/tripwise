@@ -11,12 +11,13 @@ from datetime import date
 
 from ..models.schemas import City, Hotel, Link, Place, Restaurant
 from ..services import links
-from .base import serpapi
+from .base import ProviderError, serpapi
 from .destination import DestinationData
 from .geocode import haversine_km
 
 HOTELS_TTL_HOURS = 12
-PLACES_TTL_HOURS = 24 * 7  # attractions don't change often
+PLACES_TTL_HOURS = 24 * 30  # sights and restaurants barely change, so one search lasts a month
+PLACES_STALE_DAYS = 60  # if a live search isn't possible, an older Google list is still good
 
 # (keywords in the place's Google types or its name, our interest category, fee per person, minutes).
 # Matched as whole words, first rule wins. Google often types beaches etc. only as
@@ -67,7 +68,11 @@ def clean_name(name: str, city: City) -> str:
     # keep Latin letters (incl. accents), digits and common punctuation; drop other scripts and emoji
     name = "".join(c for c in name if c.isascii() or unicodedata.category(c).startswith("L") and ord(c) < 0x250)
     name = re.split(r"\s+[-–|:]\s+|\s*-\s+(?=[A-Z])|\s*,\s*|\s+\(|\s+near\s+|-(?=A\s)", name)[0].strip(" -&,.")
-    name = re.sub(rf"\s*\b{re.escape(city.name)}$", "", name, flags=re.I).strip() or name
+    short = re.sub(rf"\s*\b{re.escape(city.name)}$", "", name, flags=re.I).strip()
+    # 'Calangute Beach Goa' → 'Calangute Beach', but keep 'Old Goa' and 'Churches and Convents of Goa'
+    if short and not re.fullmatch(r"(?i)old|new|north|south|east|west|upper|lower|greater|central", short) \
+            and not re.search(r"(?i)\b(of|in|at|the|and|&)$", short):
+        name = short
     if name.isupper() and len(name) > 4:
         name = name.title()
     if len(name) > MAX_NAME:
@@ -264,6 +269,39 @@ def _maps_params(query: str, city: City) -> dict:
             "ll": f"@{city.lat},{city.lng},12z", "hl": "en", "gl": "in"}
 
 
+# Typical price per room per night when live hotel prices aren't available:
+# (label, stars, price in India, price abroad).
+HOTEL_TIERS = [
+    ("Budget hotel or guesthouse", 2, 1500, 3500),
+    ("Mid-range hotel", 3, 3200, 6500),
+    ("Upscale hotel", 4, 6500, 12000),
+]
+
+
+def estimate_hotels(city: City, places: list[Place], checkin: date, checkout: date, pax: int) -> list[Hotel]:
+    """Three typical stays (budget / mid-range / upscale), placed among the top sights and
+    flagged as estimates, with links to search real hotels for the dates."""
+    rooms = links.rooms_for(pax)
+    nights = (checkout - checkin).days
+    top = sorted(places, key=lambda p: -p.rating)[:10]
+    lat = sorted(p.lat for p in top)[len(top) // 2] if top else city.lat
+    lng = sorted(p.lng for p in top)[len(top) // 2] if top else city.lng
+    search = f"hotels in {city.name}"
+    hotel_links = [
+        Link(label="Booking.com", url=links.booking_com(city.name, checkin, checkout, pax)),
+        Link(label="Google Hotels", url=links.google_hotels(search)),
+    ]
+    hotels = []
+    for label, stars, india, abroad in HOTEL_TIERS:
+        nightly = abroad if city.international else india
+        hotels.append(Hotel(
+            id=f"h-est-{stars}", name=label, area=f"Central {city.name}", rating=4.0, reviews=0, stars=stars,
+            nightly_price=nightly, lat=lat, lng=lng, rooms=rooms, total_price=nightly * rooms * nights,
+            links=hotel_links, is_estimate=True,
+        ))
+    return hotels
+
+
 async def fetch_live(city: City, checkin: date, checkout: date, pax: int) -> DestinationData:
     hotel_params = {
         "engine": "google_hotels", "q": f"hotels in {city.name}",
@@ -271,18 +309,34 @@ async def fetch_live(city: City, checkin: date, checkout: date, pax: int) -> Des
         "adults": min(pax, 2),  # price one room; we multiply by the number of rooms
         "currency": "INR", "gl": "in", "hl": "en",
     }
+    # Each search can fail on its own (daily cap, quota used up). Sights and food then come from
+    # an older Google copy or, failing that, open data; hotels fall back to typical prices.
     hotels_raw, places_raw, food_raw = await asyncio.gather(
         serpapi(hotel_params, HOTELS_TTL_HOURS),
-        serpapi(_maps_params(f"top tourist attractions in {city.name}", city), PLACES_TTL_HOURS),
-        serpapi(_maps_params(f"popular restaurants in {city.name}", city), PLACES_TTL_HOURS),
+        serpapi(_maps_params(f"top tourist attractions in {city.name}", city), PLACES_TTL_HOURS, PLACES_STALE_DAYS),
+        serpapi(_maps_params(f"popular restaurants in {city.name}", city), PLACES_TTL_HOURS, PLACES_STALE_DAYS),
+        return_exceptions=True,
     )
-    hotels = parse_hotels(hotels_raw, city, checkin, checkout, pax)
-    places, tags = parse_places(places_raw, city)
-    restaurants = parse_restaurants(food_raw, city)
-    if not hotels:
-        raise ValueError(f"No hotels with prices found in {city.name} for these dates.")
-    if not places:
-        raise ValueError(f"Couldn't find attractions in {city.name}.")
-    if not restaurants:
-        raise ValueError(f"Couldn't find restaurants in {city.name}.")
-    return DestinationData(hotels, places, restaurants, tags)
+    for result in (hotels_raw, places_raw, food_raw):
+        if isinstance(result, BaseException) and not isinstance(result, ProviderError):
+            raise result
+    places, tags = parse_places(places_raw, city) if isinstance(places_raw, dict) else ([], {})
+    restaurants = parse_restaurants(food_raw, city) if isinstance(food_raw, dict) else []
+    credits: list[Link] = []
+    if not places or not restaurants:
+        from .open_places import fetch_open
+        try:
+            open_places, open_tags, open_food, credits = await fetch_open(city)
+        except ProviderError:
+            raise ProviderError(
+                f"We've used today's live searches and couldn't find enough about {city.name} in open data. "
+                "Try again tomorrow, or pick a nearby destination."
+            ) from None
+        if not places:
+            places, tags = open_places, open_tags
+        if not restaurants:
+            restaurants = open_food
+    hotels = [] if isinstance(hotels_raw, ProviderError) else parse_hotels(hotels_raw, city, checkin, checkout, pax)
+    if not hotels:  # no live prices for these dates: typical prices instead
+        hotels = estimate_hotels(city, places, checkin, checkout, pax)
+    return DestinationData(hotels, places, restaurants, tags, credits)

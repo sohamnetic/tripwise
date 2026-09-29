@@ -83,7 +83,7 @@ def test_full_live_plan_from_saved_responses(monkeypatch):
     """The whole planner in live mode, with SerpApi answered from the saved files."""
     from app.config import get_settings
 
-    async def fake_serpapi(params, ttl_hours):
+    async def fake_serpapi(params, ttl_hours, stale_days=0):
         eng = params["engine"]
         if eng == "google_flights":
             return load(f"flights_{params['departure_id']}_{params['arrival_id']}".lower())

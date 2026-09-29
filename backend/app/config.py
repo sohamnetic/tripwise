@@ -17,6 +17,16 @@ class Settings(BaseSettings):
     demo_step_delay: float = 0.6
 
     serpapi_key: str = ""
+    # Fresh SerpApi searches allowed per day (UTC), so one busy day can't use up the month's
+    # 250 free searches. Past it, cached data and estimates are used. 0 = no daily cap.
+    serpapi_daily_limit: int = 8
+    # Per visitor, per 24 hours: new trips (a new origin/destination/dates) and all planning
+    # requests (replans of the same trip mostly reuse cached data). 0 = no limit.
+    visitor_daily_trips: int = 5
+    visitor_daily_requests: int = 40
+    # https://www.geoapify.com (free: 3,000 credits/day, no card). Restaurants and beaches from
+    # OpenStreetMap when Google results aren't available.
+    geoapify_key: str = ""
     anthropic_api_key: str = ""
     anthropic_model: str = "claude-opus-5-5"
 

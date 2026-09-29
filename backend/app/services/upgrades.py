@@ -25,10 +25,15 @@ def _hotel_upgrades(req: TripRequest, current: Hotel, hotels: list[Hotel], budge
     out = []
     for h in better[: CANDIDATES_PER_KIND["hotel"]]:
         perks = ", ".join(h.amenities[:3])
+        if h.is_estimate:  # a kind of stay at a typical price, not a real listing
+            kind = h.name[0].lower() + h.name[1:]
+            title = f"Upgrade to {'an' if kind[0] in 'aeiou' else 'a'} {kind}"
+            detail = f"{h.stars}★ · typical price. Choose the actual hotel on Booking.com."
+        else:
+            title = f"Stay at {h.name}"
+            detail = f"{h.stars}★ · rated {h.rating} · {h.area}" + (f" · {perks}" if perks else "")
         out.append(Upgrade(
-            id=f"hotel:{h.id}", kind="hotel",
-            title=f"Stay at {h.name}",
-            detail=f"{h.stars}★ · rated {h.rating} · {h.area}" + (f" · {perks}" if perks else ""),
+            id=f"hotel:{h.id}", kind="hotel", title=title, detail=detail,
             extra_cost=h.total_price - current.total_price,
             apply=TripOverrides(hotel_id=h.id),
         ))

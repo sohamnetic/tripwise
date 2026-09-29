@@ -2,12 +2,12 @@
 
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
 
 from ..config import get_settings
-from ..models.schemas import City, Hotel, Place, Restaurant
+from ..models.schemas import City, Hotel, Link, Place, Restaurant
 from ..services import links
 
 FIXTURES = Path(__file__).resolve().parents[2] / "fixtures"
@@ -23,6 +23,7 @@ class DestinationData:
     places: list[Place]
     restaurants: list[Restaurant]
     place_tags: dict[str, list[str]]  # extra interest tags per place id
+    credits: list[Link] = field(default_factory=list)  # open data sources used, to credit on the plan
 
 
 def demo_destinations() -> list[str]:

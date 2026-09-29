@@ -85,6 +85,7 @@ export interface Hotel {
   rooms: number;
   total_price: number;
   links: Link[];
+  is_estimate?: boolean;
 }
 
 export interface Place {
@@ -101,6 +102,8 @@ export interface Place {
   hours: string;
   description: string;
   links: Link[];
+  /** false for open data: `rating` then only ranks places and isn't shown */
+  rating_known?: boolean;
 }
 
 export type SlotKind = "place" | "meal" | "travel" | "checkin" | "checkout" | "arrival" | "departure";
@@ -172,6 +175,7 @@ export interface Plan {
   upgrades: Upgrade[];
   warnings: string[];
   tips: string[];
+  credits?: Link[];
 }
 
 export interface JobStatus {

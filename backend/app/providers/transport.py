@@ -10,6 +10,7 @@ from datetime import date, datetime, time, timedelta
 from ..config import get_settings
 from ..models.schemas import City, TransportOption
 from ..services import links
+from .base import ProviderError
 from .geocode import city_distance_km
 
 # Rough Indian Railways fare per km (per person) by class, plus a floor.
@@ -53,6 +54,33 @@ def _demo_flights(o: City, d: City, day: date, pax: int, back: bool, back_date: 
             id=f"{'in' if back else 'out'}-flight-{i}",
             mode="flight", carrier=name, service=f"{code} {400 + i * 137 + int(km) % 97}",
             from_city=o.name, to_city=d.name,
+            depart=depart, arrive=depart + timedelta(minutes=minutes), duration_min=minutes,
+            price_per_person=pp, total_price=pp * pax, is_estimate=True, links=flink,
+        ))
+    return opts
+
+
+# When live flight prices aren't available: a typical morning and evening fare.
+ESTIMATE_FLIGHTS = [("Morning flight", time(7, 30), 1.0), ("Evening flight", time(18, 30), 1.1)]
+ESTIMATE_RETURNS = [time(13, 30), time(19, 30)]
+
+
+def estimate_flights(o: City, d: City, day: date, pax: int, back: bool, out_date: date, back_date: date) -> list[TransportOption]:
+    """Typical fares from the distance, flagged as estimates. No airline or flight number,
+    since we don't know which flights run that day."""
+    if not (o.iata and d.iata) or o.iata == d.iata:
+        return []
+    km = city_distance_km(o, d)
+    base = _flight_fare(km, o.international or d.international)
+    minutes = int(35 + km / 13)  # ~780 km/h in the air plus taxiing; Kolkata–Goa ≈ 2h45m
+    flink = links.flight_links(d if back else o, o if back else d, out_date, back_date, pax)
+    opts = []
+    for i, (label, dep, mult) in enumerate(ESTIMATE_FLIGHTS):
+        depart = datetime.combine(day, ESTIMATE_RETURNS[i] if back else dep)
+        pp = _round50(base * mult)
+        opts.append(TransportOption(
+            id=f"{'in' if back else 'out'}-flight-est-{i}", mode="flight", carrier="Any airline",
+            service=f"{label} · typical fare", from_city=o.name, to_city=d.name,
             depart=depart, arrive=depart + timedelta(minutes=minutes), duration_min=minutes,
             price_per_person=pp, total_price=pp * pax, is_estimate=True, links=flink,
         ))
@@ -113,8 +141,12 @@ async def search_transport(o: City, d: City, start: date, end: date, pax: int) -
         out_f = _demo_flights(o, d, start, pax, False, end, start)
         in_f = _demo_flights(d, o, end, pax, True, end, start)
     else:
-        from .flights import search_flights  # live SerpApi flights (step 2)
-        out_f, in_f = await search_flights(o, d, start, end, pax)
+        from .flights import search_flights  # live SerpApi flights
+        try:
+            out_f, in_f = await search_flights(o, d, start, end, pax)
+        except ProviderError:  # daily cap reached, quota used up or SerpApi down
+            out_f = estimate_flights(o, d, start, pax, False, start, end)
+            in_f = estimate_flights(d, o, end, pax, True, start, end)
 
     outbound = out_f + estimate_trains(o, d, start, pax, True) + estimate_buses(o, d, start, pax, True)
     inbound = in_f + estimate_trains(d, o, end, pax, False) + estimate_buses(d, o, end, pax, False)

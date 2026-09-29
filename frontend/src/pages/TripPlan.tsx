@@ -152,6 +152,17 @@ export default function TripPlan() {
         <p className="mt-2 text-xs text-muted">
           {demo ? "Sample prices (demo mode)." : `Prices checked ${new Date(plan.prices_checked_at).toLocaleString("en-IN")}.`}{" "}
           Train, bus, food and local-travel costs are estimates.
+          {plan.credits && plan.credits.length > 0 && (
+            <>
+              {" "}Places from{" "}
+              {plan.credits.map((c, i) => (
+                <span key={c.url}>
+                  {i > 0 && " · "}
+                  <a href={c.url} target="_blank" rel="noreferrer" className="underline hover:text-sea-700">{c.label}</a>
+                </span>
+              ))}.
+            </>
+          )}
         </p>
 
         {plan.warnings.length > 0 && (

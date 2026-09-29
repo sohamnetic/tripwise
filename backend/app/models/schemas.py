@@ -88,6 +88,7 @@ class Hotel(BaseModel):
     rooms: int = 1
     total_price: int = 0
     links: list[Link] = []
+    is_estimate: bool = False  # a typical price for this kind of stay, not a real listing
 
 
 class Place(BaseModel):
@@ -104,6 +105,9 @@ class Place(BaseModel):
     hours: str
     description: str
     links: list[Link] = []
+    # False for open data (Wikidata, OpenStreetMap), where `rating` is only our ranking by how
+    # well known the place is: it's used for choosing, never shown as a star rating.
+    rating_known: bool = True
 
 
 class Restaurant(BaseModel):
@@ -116,6 +120,7 @@ class Restaurant(BaseModel):
     lng: float
     cost_per_person: int
     links: list[Link] = []
+    rating_known: bool = True
 
 
 class Slot(BaseModel):
@@ -202,6 +207,7 @@ class Plan(BaseModel):
     upgrades: list[Upgrade] = []
     warnings: list[str] = []
     tips: list[str] = []
+    credits: list[Link] = []  # open data sources used for this plan (their licences ask for credit)
 
 
 class JobStatus(BaseModel):

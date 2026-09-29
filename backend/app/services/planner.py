@@ -174,6 +174,14 @@ async def build_plan(req: TripRequest, job_id: str | None = None) -> Plan:
             warnings.append(f"Your {opt.mode} leaves on {opt.depart:%d %b} to reach {dest.name} on the morning of day 1.")
     if settings.demo_mode:
         warnings.append("Demo mode: prices are sample values, not live quotes.")
+    else:
+        guessed = [what for what, est in (
+            ("flight", any(o.mode == "flight" and o.is_estimate for o in outbound + inbound)),
+            ("hotel", any(h.is_estimate for h in data.hotels)),
+        ) if est]
+        if guessed:
+            warnings.append(f"Live {' and '.join(guessed)} prices weren't available right now, so these show typical "
+                            "prices (marked 'estimate'). Open the booking links for today's prices.")
 
     scheduled_ids = {s.ref_id for d in days for s in d.slots if s.kind == "place"}
     tips = (ai.tips if ai else []) + [
@@ -214,7 +222,7 @@ async def build_plan(req: TripRequest, job_id: str | None = None) -> Plan:
         hotel=decision.hotel, hotel_alternatives=decision.hotel_alternatives,
         days=days, places=data.places,
         packages=links.packages(dest, req.nights),
-        checklist=checklist, warnings=warnings, tips=tips,
+        checklist=checklist, warnings=warnings, tips=tips, credits=data.credits,
         upgrades=price_upgrades(
             req, ev,
             candidate_upgrades(req, req.budget - total, decision.hotel, data.hotels, data.places, data.restaurants, days,

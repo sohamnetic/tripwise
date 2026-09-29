@@ -12,17 +12,21 @@ export default function HotelCard({ hotel, nights, pick, demo }: { hotel: Hotel;
           <div className="text-sm text-muted">
             {hotel.area}{hotel.stars > 0 && <> · {"★".repeat(hotel.stars)}</>}
           </div>
-          <div className="mt-1 text-sm">
-            <span className="rounded-md bg-sea-600 px-1.5 py-0.5 text-xs font-bold text-white">{hotel.rating.toFixed(1)}</span>{" "}
-            <span className="text-muted">{hotel.reviews.toLocaleString("en-IN")} reviews</span>
-          </div>
+          {hotel.is_estimate ? (
+            <div className="mt-1 text-sm text-muted">Typical price for this kind of stay. Search real hotels below.</div>
+          ) : (
+            <div className="mt-1 text-sm">
+              <span className="rounded-md bg-sea-600 px-1.5 py-0.5 text-xs font-bold text-white">{hotel.rating.toFixed(1)}</span>{" "}
+              <span className="text-muted">{hotel.reviews.toLocaleString("en-IN")} reviews</span>
+            </div>
+          )}
         </div>
         <div className="text-right">
           <div className="text-lg font-extrabold">{rupees(hotel.total_price)}</div>
           <div className="flex items-center justify-end gap-1.5 text-xs text-muted">
             {rupees(hotel.nightly_price)}/night × {nights} × {hotel.rooms} room{hotel.rooms > 1 ? "s" : ""}
           </div>
-          <div className="mt-1"><PriceBadge estimate={false} demo={demo} /></div>
+          <div className="mt-1"><PriceBadge estimate={!!hotel.is_estimate} demo={demo} /></div>
         </div>
       </div>
       <div className="mt-2 flex flex-wrap gap-1.5">

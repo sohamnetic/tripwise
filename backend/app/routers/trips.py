@@ -1,12 +1,13 @@
 import uuid
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 
 from ..config import get_settings
 from ..db import JobRecord, TripRecord, get_session
 from ..models.schemas import City, JobCreated, JobStatus, Plan, TripRequest
 from ..providers.destination import demo_destinations
 from ..providers.geocode import search_cities
+from ..services.limits import LimitReachedError, check_and_record, client_id, trip_key
 from ..services.planner import run_job
 
 router = APIRouter(prefix="/api")
@@ -28,7 +29,12 @@ def cities(q: str = ""):
 
 
 @router.post("/trips", response_model=JobCreated, status_code=202)
-async def create_trip(req: TripRequest, background: BackgroundTasks):
+async def create_trip(req: TripRequest, background: BackgroundTasks, request: Request):
+    if not get_settings().demo_mode:  # demo data costs nothing, so no limits there
+        try:
+            check_and_record(client_id(request), trip_key(req))
+        except LimitReachedError as e:
+            raise HTTPException(429, str(e)) from None
     job_id = uuid.uuid4().hex
     with get_session() as s:
         s.add(JobRecord(id=job_id, request_json=req.model_dump_json()))

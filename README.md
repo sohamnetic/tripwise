@@ -46,8 +46,9 @@ Planning runs as a background job. The frontend polls `GET /api/jobs/{id}` for p
 
 | What | Source | Status |
 |---|---|---|
-| Flights | SerpApi Google Flights | Live mode (next step). Simulated in demo mode |
-| Hotels, attractions, restaurants | SerpApi Google Hotels / Google Maps | Live mode (next step). `backend/fixtures/*.json` in demo mode |
+| Flights | SerpApi Google Flights | Live mode; typical-fare estimates when a live search isn't possible. Simulated in demo mode |
+| Hotels, attractions, restaurants | SerpApi Google Hotels / Google Maps | Live mode. `backend/fixtures/*.json` in demo mode |
+| Attractions, restaurants (free fallback) | Wikidata + Wikivoyage (sights), OpenStreetMap via Geoapify (beaches, restaurants) | Used when Google results aren't available. No star ratings, so none are shown |
 | Trains, buses | Distance-based fare estimates plus IRCTC / redBus links | Always an **estimate**, because there is no public IRCTC or redBus API |
 | Map | Leaflet + OpenStreetMap | Free, no key |
 
@@ -94,6 +95,14 @@ To add another demo destination, drop a `backend/fixtures/<city>.json` file with
 | Database | Neon Postgres | copy the pooled connection string |
 | API | Vercel project, Root Directory `backend` | FastAPI is detected from `app/main.py`. Env: `DEMO_MODE=false`, `SERPAPI_KEY`, `DATABASE_URL`, `CORS_ORIGINS` |
 | Website | Vercel project, Root Directory `frontend` | Vite. Env: `VITE_API_URL` = the API project's URL |
+
+### Staying within the free SerpApi quota
+
+- **Daily cap.** At most `SERPAPI_DAILY_LIMIT` live searches a day (default 8 ≈ 250/month).
+- **Fallbacks.** When a live search isn't possible (cap reached, month used up, SerpApi down):
+  - flights and hotels show typical prices, marked "estimate", with a warning on the plan
+  - sights and restaurants use a saved Google copy (kept 30 days, usable up to 90), else free open data
+- **Per-visitor limits.** Each visitor (told apart by a hash of their IP) gets `VISITOR_DAILY_TRIPS` new trips a day (default 5). Replanning the same trip doesn't count toward that, but everything counts toward `VISITOR_DAILY_REQUESTS` (default 40).
 
 On Vercel (`VERCEL=1`) trip planning runs inside the request instead of in the background, because serverless functions may stop after responding. Locally it runs in the background and the loading screen shows real progress.
 

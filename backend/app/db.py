@@ -32,6 +32,21 @@ class CacheEntry(SQLModel, table=True):
     expires_at: datetime
 
 
+class ApiCall(SQLModel, table=True):
+    """One paid search we made, for the daily cap."""
+    id: int | None = Field(default=None, primary_key=True)
+    provider: str = Field(index=True)
+    at: datetime = Field(default_factory=utcnow, index=True)
+
+
+class PlanRequest(SQLModel, table=True):
+    """One planning request, for per-visitor limits. `client` is a hash, never the raw IP."""
+    id: int | None = Field(default=None, primary_key=True)
+    client: str = Field(index=True)
+    trip_key: str
+    at: datetime = Field(default_factory=utcnow, index=True)
+
+
 _settings = get_settings()
 _url = _settings.sqlalchemy_url
 engine = create_engine(
