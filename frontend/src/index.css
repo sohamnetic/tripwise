@@ -1,0 +1,207 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --color-ink: #0f172a;
+  --color-muted: #64748b;
+  --color-line: #e2e8f0;
+  --color-paper: #f8fafc;
+  --color-sea-50: #effcf9;
+  --color-sea-100: #c9f5ec;
+  --color-sea-500: #14a38b;
+  --color-sea-600: #0d8573;
+  --color-sea-700: #0f6b5e;
+  --color-sea-900: #0b3b35;
+  --color-sand-100: #fdf1d8;
+  --color-sand-400: #f5b544;
+  --color-sand-600: #c7801a;
+  --color-coral-500: #f06a4f;
+}
+
+html {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+@utility card {
+  @apply rounded-2xl border border-line bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)];
+}
+
+@utility chip {
+  @apply inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-sm font-medium transition;
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition disabled:opacity-50;
+}
+
+@utility btn-primary {
+  @apply btn bg-sea-600 text-white hover:bg-sea-700;
+}
+
+@utility btn-ghost {
+  @apply btn border border-line bg-white text-ink hover:bg-paper;
+}
+
+@utility label {
+  @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted;
+}
+
+@utility input {
+  @apply w-full rounded-xl border border-line bg-white px-3.5 py-2.5 text-[15px] outline-none transition focus:border-sea-500 focus:ring-4 focus:ring-sea-100;
+}
+
+/* ---------- backgrounds ---------- */
+
+/* faint dot grid: gives large areas some texture without adding noise */
+.bg-dots {
+  background-image: radial-gradient(rgba(13, 133, 115, 0.13) 1.1px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+.bg-dots-light {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.1px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+/* soft blurred colour blob, positioned by the caller */
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+/* fade a pattern out towards the edges */
+.mask-fade-y {
+  mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
+}
+
+/* ---------- motion ---------- */
+
+@keyframes drift { from { transform: translateX(-30px); } to { transform: translateX(40px); } }
+@keyframes wave { to { transform: translateX(-200px); } }
+@keyframes wave-slow { to { transform: translateX(-240px); } }
+@keyframes sway { from { transform: rotate(-2.5deg); } to { transform: rotate(2.5deg); } }
+@keyframes bob { from { transform: translateY(0); } to { transform: translateY(-6px); } }
+@keyframes float { from { transform: translate(0, 0) rotate(-4deg); } to { transform: translate(8px, -12px) rotate(4deg); } }
+@keyframes glow { from { opacity: 0.85; transform: scale(1); } to { opacity: 1; transform: scale(1.04); } }
+@keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+@keyframes fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.12); } 100% { transform: scale(1); } }
+@keyframes shimmer { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+@keyframes confetti-fall {
+  0% { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate3d(var(--dx), 105vh, 0) rotate(var(--rot)); opacity: 0.9; }
+}
+
+.anim-drift { animation: drift 14s ease-in-out infinite alternate; }
+.anim-drift-slow { animation: drift 22s ease-in-out infinite alternate-reverse; }
+.anim-wave { animation: wave 5s linear infinite; }
+.anim-wave-slow { animation: wave-slow 9s linear infinite; }
+.anim-sway { animation: sway 4s ease-in-out infinite alternate; }
+.anim-bob { animation: bob 2.4s ease-in-out infinite alternate; }
+.anim-bob-slow { animation: bob 3.4s ease-in-out infinite alternate; }
+.anim-float { animation: float 5s ease-in-out infinite alternate; }
+.anim-float-slow { animation: float 7s ease-in-out infinite alternate-reverse; }
+.anim-glow { animation: glow 4s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+.anim-twinkle { animation: twinkle 3s ease-in-out infinite; }
+.anim-twinkle-slow { animation: twinkle 5s ease-in-out infinite 1s; }
+.anim-pop { animation: pop 0.35s ease-out; }
+
+/* scene movers (SVG user units: 1px = 1 unit of the 1200×400 viewBox) */
+@keyframes cross { from { transform: translateX(-260px); } to { transform: translateX(1460px); } }
+@keyframes cross-rev { from { transform: translateX(1460px); } to { transform: translateX(-260px); } }
+@keyframes glide {
+  0% { transform: translate(-200px, 70px) rotate(-3deg); }
+  50% { transform: translate(600px, 10px) rotate(3deg); }
+  100% { transform: translate(1400px, -30px) rotate(-2deg); }
+}
+@keyframes fall { from { transform: translate(0, 0); } to { transform: translate(-40px, 420px); } }
+@keyframes rain { from { transform: translate(0, 0); } to { transform: translate(-60px, 430px); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes sweep { 0%, 100% { transform: rotate(-28deg); } 50% { transform: rotate(22deg); } }
+@keyframes dip { 0%, 100% { transform: rotate(-9deg); } 50% { transform: rotate(7deg); } }
+@keyframes flutter { 0%, 100% { transform: skewY(0deg) scaleX(1); } 50% { transform: skewY(8deg) scaleX(0.9); } }
+@keyframes walk { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2.5px); } }
+@keyframes wiggle { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+@keyframes jump {
+  0% { transform: translate(0, 30px) rotate(-40deg); opacity: 0; }
+  5% { opacity: 1; }
+  20% { transform: translate(40px, -36px) rotate(0deg); }
+  38% { transform: translate(80px, 30px) rotate(40deg); opacity: 1; }
+  40%, 100% { transform: translate(80px, 40px) rotate(40deg); opacity: 0; }
+}
+@keyframes cable { from { transform: translate(0, 0); } to { transform: translate(1100px, -180px); } }
+@keyframes ski { from { transform: translate(-120px, -10px); } to { transform: translate(1320px, 90px); } }
+@keyframes puff { 0% { transform: translate(0, 0) scale(0.6); opacity: 0.85; } 100% { transform: translate(-36px, -44px) scale(1.7); opacity: 0; } }
+@keyframes bubble { 0% { transform: translateY(0); opacity: 0.7; } 100% { transform: translateY(-90px); opacity: 0; } }
+@keyframes cascade { to { stroke-dashoffset: -60; } }
+
+.anim-cross { animation: cross 50s linear infinite; }
+.anim-cross-rev { animation: cross-rev 50s linear infinite; }
+.anim-glide { animation: glide 38s linear infinite; }
+.anim-fall { animation: fall 9s linear infinite; }
+.anim-rain { animation: rain 1s linear infinite; }
+.anim-spin-slow { animation: spin 14s linear infinite; }
+.anim-sweep { animation: sweep 6s ease-in-out infinite; }
+.anim-dip { animation: dip 5s ease-in-out infinite; }
+.anim-flutter { animation: flutter 1.6s ease-in-out infinite; }
+.anim-walk { animation: walk 0.9s ease-in-out infinite; }
+.anim-wiggle { animation: wiggle 0.8s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 50%; }
+.anim-jump { animation: jump 5s ease-in-out infinite; }
+.anim-cable { animation: cable 26s linear infinite; }
+.anim-ski { animation: ski 14s linear infinite; }
+.anim-puff { animation: puff 2.1s ease-out infinite; transform-box: fill-box; transform-origin: 50% 50%; }
+.anim-bubble { animation: bubble 3.2s ease-in infinite; }
+.anim-cascade { animation: cascade 0.9s linear infinite; }
+
+.fade-up { animation: fade-up 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.reveal.is-visible { opacity: 1; transform: none; }
+
+.skeleton {
+  background: linear-gradient(90deg, #eef2f6 25%, #f8fafc 50%, #eef2f6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+.lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.lift:hover { transform: translateY(-3px); box-shadow: 0 12px 28px -12px rgba(15, 23, 42, 0.25); }
+button:active:not(:disabled), a.btn:active { transform: scale(0.97); }
+
+/* scenes: pause when off screen; thumbnails only move while their card is hovered */
+.scene-paused *,
+.scene-still * {
+  animation-play-state: paused !important;
+}
+.group:hover .scene-still:not(.scene-paused) *,
+.group:focus-visible .scene-still:not(.scene-paused) * {
+  animation-play-state: running !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+
+.leaflet-container {
+  font-family: var(--font-sans);
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .card {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+  html {
+    background: white;
+  }
+}
