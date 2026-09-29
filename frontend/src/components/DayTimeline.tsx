@@ -61,7 +61,7 @@ export default function DayTimeline({ day, places }: { day: Day; places: Place[]
                     <span>⭐ {place.rating}</span>
                     <span>🕒 {place.hours}</span>
                     {place.links.map((l) => (
-                      <a key={l.label} href={l.url} target="_blank" rel="noreferrer" className="no-print font-semibold text-sea-700 hover:underline">
+                      <a key={l.label} href={l.url} target="_blank" rel="noreferrer" className="no-print rounded-full bg-sea-50 px-2.5 py-1.5 font-semibold text-sea-700 ring-1 ring-sea-100 hover:bg-sea-100 md:py-0.5">
                         {l.label === "Map" ? "Map ↗" : `Book on ${l.label} ↗`}
                       </a>
                     ))}

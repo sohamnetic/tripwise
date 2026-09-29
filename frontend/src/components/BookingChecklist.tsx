@@ -49,7 +49,7 @@ export default function BookingChecklist({ tripId, items }: { tripId: string; it
             <input type="checkbox" checked={checked} onChange={() => toggle(item.label)} className="h-4 w-4 accent-sea-600" />
             <span className="w-5 text-xs font-bold text-muted">{i + 1}</span>
             <span className={`flex-1 text-sm ${checked ? "text-muted line-through" : "font-medium"}`}>{item.label}</span>
-            <a href={item.url} target="_blank" rel="noreferrer" className="no-print text-sm font-semibold text-sea-700 hover:underline">
+            <a href={item.url} target="_blank" rel="noreferrer" className="no-print -my-1 rounded-full bg-sea-50 px-3 py-1.5 text-sm font-semibold text-sea-700 ring-1 ring-sea-100 hover:bg-sea-100">
               Open ↗
             </a>
           </label>

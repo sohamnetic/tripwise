@@ -47,9 +47,9 @@ const STEPS = [
 ];
 
 const FACTS = [
-  { emoji: "🗺️", value: "47", label: "cities in India & nearby" },
+  { emoji: "🗺️", value: String(Object.keys(LOOKS).length), label: "destinations in India & nearby" },
   { emoji: "₹", value: "100%", label: "priced in rupees" },
-  { emoji: "🧮", value: "0", label: "guessed prices: all calculated" },
+  { emoji: "🧮", value: "0", label: "prices made up by AI" },
   { emoji: "🔗", value: "10+", label: "sites to book on" },
 ];
 
