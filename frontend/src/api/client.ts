@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import type { City, Health, JobStatus, Plan, TripRequest } from "./types";
 
-const BASE = import.meta.env.VITE_API_URL ?? "";
+// In development Vite proxies /api to the local backend; in production VITE_API_URL is the
+// backend's address (e.g. https://tripwise-api.onrender.com). A trailing slash is tolerated.
+const BASE = (import.meta.env.VITE_API_URL ?? "").replace(/\/+$/, "");
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
