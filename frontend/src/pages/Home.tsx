@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useHealth } from "../api/client";
 import type { Interest, Style, TransportPref, TripRequest } from "../api/types";
 import CityInput from "../components/CityInput";
+import RecentTrips from "../components/RecentTrips";
 import Reveal from "../components/Reveal";
 import Scene from "../components/Scene";
 import Topo from "../components/Topo";
@@ -253,6 +254,8 @@ export default function Home() {
           </button>
         </form>
       </div>
+
+      <RecentTrips />
 
       {/* at a glance */}
       <div className="mx-auto mt-8 max-w-4xl px-4">

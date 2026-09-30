@@ -6,10 +6,18 @@ import type { City, Health, JobStatus, Plan, TripRequest } from "./types";
 const BASE = (import.meta.env.VITE_API_URL ?? "").replace(/\/+$/, "");
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { "Content-Type": "application/json" },
-    ...init,
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE}${path}`, {
+      headers: { "Content-Type": "application/json" },
+      ...init,
+    });
+  } catch {
+    // no connection at all (the browser only says "Failed to fetch")
+    throw new Error(navigator.onLine
+      ? "Couldn't reach Tripwise. Please check your connection and try again."
+      : "You're offline. Trips you've opened on this device still work; this one needs internet the first time.");
+  }
   if (!res.ok) {
     let message = `Request failed (${res.status})`;
     try {

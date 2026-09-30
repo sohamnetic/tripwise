@@ -27,6 +27,22 @@ India-first, all prices in ₹.
 - A booking checklist (confetti when everything's booked) and package suggestions
 - "Cheaper version" / "More comfort" one-click replanning, a share link and print-to-PDF
 
+## Install it as an app
+
+Tripwise is a Progressive Web App, so it installs from the browser. There's no app store.
+
+- **Android (Chrome, Edge, Samsung Internet):** tap **Install** on the banner, or **📲 Install the app** in the footer.
+- **iPhone / iPad (Safari):** the same button shows the steps: Share → **Add to Home Screen** → Add.
+- **Desktop Chrome / Edge:** use the banner, or the install icon in the address bar.
+
+The installed app:
+- opens full screen from its home-screen icon
+- shows **Your trips** on the home screen
+- opens trips you've viewed even when you're offline, with their map tiles
+- shows **A new version is ready → Refresh** after each deploy
+
+Icons are rendered from `frontend/public/logo.svg` and `logo-full.svg` with `node scripts/make-icons.mjs`. The offline worker is generated at build time by `vite-plugin-pwa` (see `vite.config.ts`).
+
 ## How it works
 
 ```

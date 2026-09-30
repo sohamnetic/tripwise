@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { InstallLink } from "./InstallApp";
 
 const DESTINATIONS = ["Goa", "Manali", "Jaipur", "Varanasi", "Alleppey", "Leh"];
 const PARTNERS = ["MakeMyTrip", "Booking.com", "IRCTC", "redBus", "Skyscanner", "Klook"];
@@ -15,12 +16,13 @@ export default function Footer() {
         <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <div className="flex items-center gap-2 text-lg font-extrabold text-white">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-sea-500">🧭</span>
+              <img src="/logo.svg" alt="" className="h-8 w-8 rounded-lg ring-1 ring-white/20" />
               Tripwise
             </div>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-white/70">
               One budget in, a whole trip out: transport, stays, a day-by-day plan and links to book it all. Built for Indian travellers, priced in ₹.
             </p>
+            <InstallLink className="mt-4 rounded-full bg-white/10 px-3.5 py-2 text-sm font-semibold text-white ring-1 ring-white/20 hover:bg-white/20" />
           </div>
           <div>
             <div className="text-xs font-bold uppercase tracking-wider text-sea-100">Popular trips</div>

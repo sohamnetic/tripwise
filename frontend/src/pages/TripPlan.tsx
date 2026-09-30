@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTrip } from "../api/client";
 import type { Style, TripRequest } from "../api/types";
@@ -17,6 +17,7 @@ import WeatherCard from "../components/WeatherCard";
 import { MODE_ICON, dayColor, duration, rupees, shortDate } from "../lib/format";
 import { useCountUp } from "../lib/hooks";
 import { withoutPicks } from "../lib/overrides";
+import { rememberTrip } from "../lib/recent";
 import { vibeFor } from "../lib/vibes";
 
 const STYLE_ORDER: Style[] = ["budget", "balanced", "comfort", "luxury"];
@@ -62,6 +63,9 @@ export default function TripPlan() {
   const { data: plan, isLoading, error } = useTrip(tripId);
   const [activeDay, setActiveDay] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    if (plan) rememberTrip(plan); // listed under "Your trips" on the home screen
+  }, [plan]);
   const replan = (request: TripRequest) => navigate("/planning", { state: { request } });
 
   if (isLoading) return <Loading />;
@@ -81,8 +85,18 @@ export default function TripPlan() {
   const styleIdx = STYLE_ORDER.indexOf(req.style);
 
   const share = async () => {
+    const url = window.location.href;
+    // Phones (and the installed app, which has no address bar) get the system share sheet
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: `Tripwise: ${plan.origin.name} → ${plan.destination.name}`, url });
+        return;
+      } catch (e) {
+        if ((e as Error).name === "AbortError") return; // closed the share sheet
+      }
+    }
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {

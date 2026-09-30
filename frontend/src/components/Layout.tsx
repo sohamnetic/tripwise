@@ -1,5 +1,7 @@
 import { Link, Outlet } from "react-router-dom";
+import AppUpdates from "./AppUpdates";
 import Footer from "./Footer";
+import { InstallBanner } from "./InstallApp";
 
 export default function Layout() {
   return (
@@ -12,7 +14,7 @@ export default function Layout() {
       <header className="no-print sticky top-0 z-[1000] border-b border-line/70 bg-white/80 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
           <Link to="/" className="flex items-center gap-2 text-lg font-extrabold tracking-tight text-sea-900">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-sea-600 text-white">🧭</span>
+            <img src="/logo.svg" alt="" className="h-8 w-8 rounded-lg" />
             Tripwise
           </Link>
           <nav className="flex items-center gap-1">
@@ -29,6 +31,8 @@ export default function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <InstallBanner />
+      <AppUpdates />
     </div>
   );
 }
