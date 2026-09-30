@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useLocation } from "react-router-dom";
 import { promptInstall, useInstall } from "../lib/pwa";
 
@@ -23,10 +24,17 @@ function rememberDismissed() {
   }
 }
 
-/** Steps for iPhone/iPad, where Safari has no install button of its own. */
+/** Steps for iPhone/iPad, where Safari has no install button of its own. Rendered on top of the
+ *  page (not inside whatever opened it), so it looks the same from the dark footer as anywhere. */
 function IOSSteps({ onClose }: { onClose: () => void }) {
-  return (
-    <div className="fixed inset-0 z-[3000] flex items-end justify-center bg-ink/40 p-3 backdrop-blur-sm sm:items-center"
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return createPortal(
+    <div className="fixed inset-0 z-[3000] flex items-end justify-center bg-ink/40 p-3 text-left text-ink backdrop-blur-sm sm:items-center"
       role="dialog" aria-modal="true" aria-labelledby="ios-install-title" onClick={onClose}>
       <div className="fade-up w-full max-w-sm rounded-3xl bg-white p-5 shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-3">
@@ -44,13 +52,13 @@ function IOSSteps({ onClose }: { onClose: () => void }) {
               <svg viewBox="0 0 24 24" className="inline h-5 w-5 align-text-bottom text-sea-700" fill="none" stroke="currentColor" strokeWidth="2" aria-label="Share icon">
                 <path d="M12 3v12M8 7l4-4 4 4" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1" strokeLinecap="round" />
-              </svg>{" "}
-              in the browser toolbar
+              </svg>
+              . In newer Safari it's inside the <b>☰</b> or <b>•••</b> menu next to the address bar.
             </span>
           </li>
           <li className="flex items-center gap-3">
             <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-sea-50 font-bold text-sea-700">2</span>
-            <span>Scroll down and tap <b>Add to Home Screen</b></span>
+            <span>Tap <b>Add to Home Screen</b> (scroll down the list if you don't see it)</span>
           </li>
           <li className="flex items-center gap-3">
             <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-sea-50 font-bold text-sea-700">3</span>
@@ -59,7 +67,8 @@ function IOSSteps({ onClose }: { onClose: () => void }) {
         </ol>
         <button className="btn-primary mt-5 w-full" onClick={onClose}>Got it</button>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
