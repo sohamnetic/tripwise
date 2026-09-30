@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { City, Health, JobStatus, Plan, TripRequest } from "./types";
+import type { City, CityOption, Health, JobStatus, Plan, TripRequest } from "./types";
 
 // In development Vite proxies /api to the local backend; in production VITE_API_URL is the
 // backend's address (e.g. https://tripwise-api.onrender.com). A trailing slash is tolerated.
@@ -35,6 +35,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   health: () => request<Health>("/api/health"),
   cities: (q: string) => request<City[]>(`/api/cities?q=${encodeURIComponent(q)}`),
+  allCities: () => request<CityOption[]>("/api/cities/all"),
   createTrip: (body: TripRequest) =>
     request<{ job_id: string }>("/api/trips", { method: "POST", body: JSON.stringify(body) }),
   job: (id: string) => request<JobStatus>(`/api/jobs/${id}`),
@@ -45,8 +46,13 @@ export function useHealth() {
   return useQuery({ queryKey: ["health"], queryFn: api.health, staleTime: 60_000 });
 }
 
-export function useCities(q: string) {
-  return useQuery({ queryKey: ["cities", q], queryFn: () => api.cities(q), staleTime: Infinity });
+/** Every city we know, fetched once, so the search box can filter instantly as you type. */
+export function useAllCities() {
+  return useQuery({ queryKey: ["cities-all"], queryFn: api.allCities, staleTime: Infinity, gcTime: Infinity });
+}
+
+export function useCities(q: string, enabled = true) {
+  return useQuery({ queryKey: ["cities", q], queryFn: () => api.cities(q), staleTime: Infinity, enabled });
 }
 
 export function useJob(id: string | undefined) {

@@ -5,7 +5,7 @@ import math
 from functools import lru_cache
 from pathlib import Path
 
-from ..models.schemas import City
+from ..models.schemas import City, CityOption
 
 _DATA = Path(__file__).resolve().parent.parent / "data" / "cities.json"
 
@@ -45,6 +45,10 @@ def search_cities(query: str, limit: int = 8) -> list[City]:
         elif any(q in n for n in names):
             contains.append(row)
     return [_to_city(r) for r in (starts + contains)[:limit]]
+
+
+def all_city_options() -> list[CityOption]:
+    return [CityOption(name=r["name"], state=r["state"], country=r["country"], aliases=r["aliases"]) for r in _cities()]
 
 
 def resolve_city(name: str) -> City:

@@ -43,6 +43,14 @@ export interface Link {
   url: string;
 }
 
+/** A city for the search box, with its other names (Calcutta, Bombay, Bangalore…). */
+export interface CityOption {
+  name: string;
+  state: string;
+  country: string;
+  aliases: string[];
+}
+
 export interface City {
   name: string;
   state: string;

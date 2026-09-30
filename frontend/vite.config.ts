@@ -58,6 +58,12 @@ export default defineConfig({
             },
           },
           {
+            // The city list for the search boxes: instant from the phone, refreshed in the background.
+            urlPattern: ({ url, request }) => request.method === "GET" && url.pathname.endsWith("/api/cities/all"),
+            handler: "StaleWhileRevalidate",
+            options: { cacheName: "cities", cacheableResponse: { statuses: [200] } },
+          },
+          {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/,
             handler: "StaleWhileRevalidate",
             options: { cacheName: "google-fonts-css" },

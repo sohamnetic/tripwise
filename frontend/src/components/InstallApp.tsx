@@ -105,7 +105,7 @@ export function InstallBanner() {
   return (
     <>
       {offer && (
-        <div className="no-print fixed inset-x-3 bottom-3 z-[2000] sm:inset-x-auto sm:right-4 sm:bottom-4 sm:w-[380px]">
+        <div className="pointer-events-auto">
           <div className="fade-up flex items-center gap-3 rounded-2xl bg-white p-3 shadow-xl ring-1 ring-line" role="region" aria-label="Install Tripwise">
             <img src="/pwa-64x64.png" alt="" className="h-11 w-11 shrink-0 rounded-xl" />
             <div className="min-w-0 flex-1">

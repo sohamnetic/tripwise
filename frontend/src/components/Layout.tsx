@@ -31,8 +31,12 @@ export default function Layout() {
         <Outlet />
       </main>
       <Footer />
-      <InstallBanner />
-      <AppUpdates />
+      {/* notices share one stack at the bottom, so they never cover each other or the page's
+          search boxes; they step aside while someone is typing (see .hide-while-typing) */}
+      <div className="no-print hide-while-typing pointer-events-none fixed inset-x-3 bottom-3 z-[2000] flex flex-col gap-2 sm:inset-x-auto sm:bottom-4 sm:right-4 sm:w-[380px]">
+        <AppUpdates />
+        <InstallBanner />
+      </div>
     </div>
   );
 }

@@ -11,6 +11,9 @@ import { addDays, rupees, todayPlus } from "../lib/format";
 import { EXPLORE, LOOKS, destinationsWith, vibeFor, type Tag } from "../lib/vibes";
 
 const EXPLORE_PAGE = 8;
+// Suggested in the city boxes before anything is typed.
+const FROM_POPULAR = ["Kolkata", "Delhi", "Mumbai", "Bengaluru", "Chennai", "Hyderabad", "Pune", "Ahmedabad"];
+const TO_POPULAR = ["Goa", "Manali", "Jaipur", "Udaipur", "Alleppey", "Leh", "Rishikesh", "Darjeeling"];
 
 const LAST_KEY = "tripwise:last-request";
 
@@ -155,8 +158,10 @@ export default function Home() {
           )}
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <CityInput label="From" value={form.origin} onChange={(v) => set("origin", v)} placeholder="Kolkata" />
-            <CityInput label="To" value={form.destination} onChange={(v) => set("destination", v)} placeholder="Goa" />
+            <CityInput label="From" value={form.origin} onChange={(v) => set("origin", v)} placeholder="Your city"
+              popular={FROM_POPULAR} popularLabel="Big cities" />
+            <CityInput label="To" value={form.destination} onChange={(v) => set("destination", v)} placeholder="Where to?"
+              popular={TO_POPULAR} popularLabel="Popular trips" showTagline />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-[1fr_1fr_auto]">

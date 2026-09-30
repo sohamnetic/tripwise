@@ -60,3 +60,12 @@ def test_inline_jobs_turn_on_under_vercel(monkeypatch):
 def test_cors_only_allows_configured_sites():
     s = Settings(cors_origins="https://tripwise.vercel.app/")
     assert s.cors_origin_list == ["https://tripwise.vercel.app"]
+
+
+def test_all_cities_for_the_search_box(client):
+    r = client.get("/api/cities/all")
+    assert r.status_code == 200 and "max-age" in r.headers["cache-control"]
+    cities = r.json()
+    assert len(cities) >= 100
+    kolkata = next(c for c in cities if c["name"] == "Kolkata")
+    assert kolkata["state"] == "West Bengal" and "calcutta" in kolkata["aliases"]

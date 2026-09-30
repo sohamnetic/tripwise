@@ -46,6 +46,14 @@ class Link(BaseModel):
     url: str
 
 
+class CityOption(BaseModel):
+    """A city for the search box: enough to find it by any of its names."""
+    name: str
+    state: str
+    country: str
+    aliases: list[str] = []
+
+
 class City(BaseModel):
     name: str
     state: str

@@ -1,12 +1,12 @@
 import uuid
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request, Response
 
 from ..config import get_settings
 from ..db import JobRecord, TripRecord, get_session
-from ..models.schemas import City, JobCreated, JobStatus, Plan, TripRequest
+from ..models.schemas import City, CityOption, JobCreated, JobStatus, Plan, TripRequest
 from ..providers.destination import demo_destinations
-from ..providers.geocode import search_cities
+from ..providers.geocode import all_city_options, search_cities
 from ..services.limits import LimitReachedError, check_and_record, client_id, trip_key
 from ..services.planner import run_job
 
@@ -26,6 +26,13 @@ def health():
 @router.get("/cities", response_model=list[City])
 def cities(q: str = ""):
     return search_cities(q)
+
+
+@router.get("/cities/all", response_model=list[CityOption])
+def all_cities(response: Response):
+    # The list only changes with a deploy; let browsers and Vercel's edge keep it for a day.
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400"
+    return all_city_options()
 
 
 @router.post("/trips", response_model=JobCreated, status_code=202)

@@ -54,7 +54,8 @@ body {
 }
 
 @utility input {
-  @apply w-full rounded-xl border border-line bg-white px-3.5 py-2.5 text-[15px] outline-none transition focus:border-sea-500 focus:ring-4 focus:ring-sea-100;
+  /* 16px on phones: iPhone Safari zooms into any text box smaller than that */
+  @apply w-full rounded-xl border border-line bg-white px-3.5 py-2.5 text-base outline-none transition focus:border-sea-500 focus:ring-4 focus:ring-sea-100 md:text-[15px];
 }
 
 /* ---------- backgrounds ---------- */
@@ -204,4 +205,9 @@ button:active:not(:disabled), a.btn:active { transform: scale(0.97); }
   html {
     background: white;
   }
+}
+
+/* Floating notices get out of the way while the keyboard is up. */
+body:has(input:focus, textarea:focus, select:focus) .hide-while-typing {
+  display: none;
 }
