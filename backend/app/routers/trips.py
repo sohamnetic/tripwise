@@ -20,6 +20,7 @@ def health():
         "ok": True,
         "demo_mode": settings.demo_mode,
         "demo_destinations": demo_destinations() if settings.demo_mode else [],
+        "chat_ai": bool(settings.gemini_api_key),  # False: the chat answers in simple mode
     }
 
 

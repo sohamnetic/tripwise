@@ -199,4 +199,71 @@ export interface Health {
   ok: boolean;
   demo_mode: boolean;
   demo_destinations: string[];
+  chat_ai?: boolean; // false: the chat answers in simple mode (no AI)
+}
+
+
+// ---- "Ask Tripwise" chat ----
+
+export type Rating = "Great" | "Good" | "Okay" | "Avoid" | "Closed";
+
+export interface SeasonInfo {
+  month: number;
+  rating: Rating;
+  score: number;
+  reason: string;
+  weather: string;
+  tmax: number;
+  tmin: number;
+  rainy_days: number;
+  note: string;
+}
+
+export interface CostEstimate {
+  low: number;
+  high: number;
+  mid: number;
+  transport: number;
+  stay: number;
+  daily: number;
+  transport_mode: "flight" | "train" | "bus" | null;
+  transport_label: string;
+  travel_hours: number | null;
+  includes_travel: boolean;
+  nights: number;
+  travellers: number;
+  style: Style;
+  fits_budget: boolean | null;
+  over_by: number;
+}
+
+export interface PlanPrefill {
+  origin: string | null;
+  destination: string;
+  start_date: string;
+  end_date: string;
+  travellers: number;
+  budget: number;
+  style: Style;
+  interests: Interest[];
+}
+
+export interface Suggestion {
+  name: string;
+  tagline: string;
+  tags: string[];
+  season: SeasonInfo;
+  cost: CostEstimate;
+  prefill: PlanPrefill;
+}
+
+export interface ChatTurn {
+  role: "user" | "assistant";
+  text: string;
+}
+
+export interface ChatReply {
+  reply: string;
+  suggestions: Suggestion[];
+  mode: "ai" | "simple";
 }

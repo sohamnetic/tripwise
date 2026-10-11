@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useHealth } from "../api/client";
 import type { Interest, Style, TransportPref, TripRequest } from "../api/types";
@@ -8,14 +8,13 @@ import Reveal from "../components/Reveal";
 import Scene from "../components/Scene";
 import Topo from "../components/Topo";
 import { addDays, rupees, todayPlus } from "../lib/format";
+import { LAST_KEY, loadLast } from "../lib/lastRequest";
 import { EXPLORE, LOOKS, destinationsWith, vibeFor, type Tag } from "../lib/vibes";
 
 const EXPLORE_PAGE = 8;
 // Suggested in the city boxes before anything is typed.
 const FROM_POPULAR = ["Kolkata", "Delhi", "Mumbai", "Bengaluru", "Chennai", "Hyderabad", "Pune", "Ahmedabad"];
 const TO_POPULAR = ["Goa", "Manali", "Jaipur", "Udaipur", "Alleppey", "Leh", "Rishikesh", "Darjeeling"];
-
-const LAST_KEY = "tripwise:last-request";
 
 const STYLES: { value: Style; label: string; emoji: string; hint: string }[] = [
   { value: "budget", label: "Budget", emoji: "🎒", hint: "Hostels, trains, street food" },
@@ -73,15 +72,6 @@ function defaults(): TripRequest {
   };
 }
 
-function loadLast(): TripRequest | null {
-  try {
-    const raw = localStorage.getItem(LAST_KEY);
-    return raw ? (JSON.parse(raw) as TripRequest) : null;
-  } catch {
-    return null;
-  }
-}
-
 export default function Home() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -90,6 +80,16 @@ export default function Home() {
   const [form, setForm] = useState<TripRequest>(navState?.destination ? { ...initial, destination: navState.destination } : initial);
   const health = useHealth();
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Arriving with a trip to fill in ("Plan this trip" in the chat, Edit, a footer link), including
+  // when this page is already open, so the form shows it and scrolls into view.
+  useEffect(() => {
+    if (!navState) return;
+    if (navState.request) setForm(navState.request);
+    else if (navState.destination) setForm((f) => ({ ...f, destination: navState.destination! }));
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.key]);
 
   const set = <K extends keyof TripRequest>(key: K, value: TripRequest[K]) => setForm((f) => ({ ...f, [key]: value }));
   const nights = Math.round((Date.parse(form.end_date) - Date.parse(form.start_date)) / 86_400_000);

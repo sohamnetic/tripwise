@@ -229,3 +229,76 @@ class JobStatus(BaseModel):
 
 class JobCreated(BaseModel):
     job_id: str
+
+
+# ---- "Ask Tripwise" chat ---------------------------------------------------------------
+
+Rating = Literal["Great", "Good", "Okay", "Avoid", "Closed"]
+
+
+class SeasonInfo(BaseModel):
+    """How good a month is for a place, from 6 years of real weather plus known closures."""
+    month: int
+    rating: Rating
+    score: int  # 0–100
+    reason: str  # "Pleasant: 14–25°C, little rain"
+    weather: str  # "14–25°C · dry"
+    tmax: float
+    tmin: float
+    rainy_days: float
+    note: str = ""  # a caveat that doesn't change the rating ("rafting is suspended")
+
+
+class CostEstimate(BaseModel):
+    """A rough trip cost from the same estimators the planner falls back to (no live prices)."""
+    low: int
+    high: int
+    mid: int
+    transport: int  # return, whole group; 0 when the origin isn't known
+    stay: int
+    daily: int  # food, local travel and activities, whole group
+    transport_mode: Mode | None = None
+    transport_label: str = ""  # "Flight · ~2h 45m"
+    travel_hours: float | None = None
+    includes_travel: bool
+    nights: int
+    travellers: int
+    style: Style
+    fits_budget: bool | None = None  # None when no budget was given
+    over_by: int = 0
+
+
+class PlanPrefill(BaseModel):
+    """What "Plan this trip" puts into the planner form."""
+    origin: str | None = None
+    destination: str
+    start_date: date
+    end_date: date
+    travellers: int
+    budget: int
+    style: Style
+    interests: list[Interest] = []
+
+
+class Suggestion(BaseModel):
+    name: str
+    tagline: str
+    tags: list[str]
+    season: SeasonInfo
+    cost: CostEstimate
+    prefill: PlanPrefill
+
+
+class ChatTurn(BaseModel):
+    role: Literal["user", "assistant"]
+    text: str = Field(max_length=4000)
+
+
+class ChatRequest(BaseModel):
+    messages: list[ChatTurn] = Field(min_length=1, max_length=40)
+
+
+class ChatReply(BaseModel):
+    reply: str
+    suggestions: list[Suggestion] = []
+    mode: Literal["ai", "simple"]

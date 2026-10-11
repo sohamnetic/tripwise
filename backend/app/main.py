@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .config import get_settings
 from .db import init_db
-from .routers import trips
+from .routers import chat, trips
 
 logging.basicConfig(level=logging.INFO)
 
@@ -27,6 +27,7 @@ app.add_middleware(
     allow_headers=["Content-Type"],
 )
 app.include_router(trips.router)
+app.include_router(chat.router)
 
 
 @app.get("/")

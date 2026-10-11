@@ -50,6 +50,13 @@ class RouteFare(SQLModel, table=True):
     seen_at: datetime = Field(default_factory=utcnow, index=True)
 
 
+class ChatMessage(SQLModel, table=True):
+    """One chat message a visitor sent, for the per-visitor limit. `client` is a hash, never an IP."""
+    id: int | None = Field(default=None, primary_key=True)
+    client: str = Field(index=True)
+    at: datetime = Field(default_factory=utcnow, index=True)
+
+
 class PlanRequest(SQLModel, table=True):
     """One planning request, for per-visitor limits. `client` is a hash, never the raw IP."""
     id: int | None = Field(default=None, primary_key=True)

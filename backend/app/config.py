@@ -27,6 +27,14 @@ class Settings(BaseSettings):
     # https://www.geoapify.com (free: 3,000 credits/day, no card). Restaurants and beaches from
     # OpenStreetMap when Google results aren't available.
     geoapify_key: str = ""
+    # "Ask Tripwise" chat: Google Gemini free tier (key from aistudio.google.com, no card). Without a
+    # key, or past the daily cap, the chat answers in simple mode (no AI).
+    gemini_api_key: str = ""
+    # Flash-Lite: answers in ~2s on the free tier (full Flash can take 25s+ per step). Google keeps
+    # the "-latest" name pointed at the current model, so retiring a version doesn't break the chat.
+    gemini_model: str = "gemini-flash-lite-latest"
+    gemini_daily_limit: int = 300  # Gemini requests per day; one chat message may take 2–3
+    chat_daily_messages: int = 30  # per visitor, per 24 hours
     anthropic_api_key: str = ""
     anthropic_model: str = "claude-opus-5-5"
 

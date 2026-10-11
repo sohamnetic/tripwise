@@ -85,7 +85,9 @@ export default function CityInput({ label, value, onChange, placeholder, popular
     return (serverSearch.data ?? []).map((c) => ({ city: { ...c, aliases: [] } }));
   }, [all.data, serverSearch.data, typing, value, popular]);
 
-  useEffect(() => setActive(0), [value]);
+  useEffect(() => {
+    setActive(0);
+  }, [value]);
   useEffect(() => {
     listRef.current?.querySelector(`[data-index="${active}"]`)?.scrollIntoView({ block: "nearest" });
   }, [active]);

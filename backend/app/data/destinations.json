@@ -1,0 +1,1084 @@
+[
+ {
+  "name": "Kolkata",
+  "tagline": "Trams, adda & mishti",
+  "tags": [
+   "cities",
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 12
+ },
+ {
+  "name": "Delhi",
+  "tagline": "History on every corner",
+  "tags": [
+   "cities",
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 214
+ },
+ {
+  "name": "Mumbai",
+  "tagline": "Sea face, vada pav & big dreams",
+  "tags": [
+   "cities",
+   "beaches"
+  ],
+  "closures": [],
+  "elevation_m": 6
+ },
+ {
+  "name": "Bengaluru",
+  "tagline": "Gardens, cafés & breweries",
+  "tags": [
+   "cities"
+  ],
+  "closures": [],
+  "elevation_m": 910
+ },
+ {
+  "name": "Chennai",
+  "tagline": "Marina, filter coffee & temples",
+  "tags": [
+   "cities",
+   "beaches"
+  ],
+  "closures": [],
+  "elevation_m": 12
+ },
+ {
+  "name": "Hyderabad",
+  "tagline": "Biryani & the Charminar",
+  "tags": [
+   "cities",
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 505
+ },
+ {
+  "name": "Pune",
+  "tagline": "Forts, food & weekend getaways",
+  "tags": [
+   "cities"
+  ],
+  "closures": [],
+  "elevation_m": 561
+ },
+ {
+  "name": "Ahmedabad",
+  "tagline": "Pols, kites & Gujarati thalis",
+  "tags": [
+   "cities",
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 53
+ },
+ {
+  "name": "Lucknow",
+  "tagline": "Nawabi food & monuments",
+  "tags": [
+   "cities",
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 117
+ },
+ {
+  "name": "Chandigarh",
+  "tagline": "Gardens, lakes & the Rock Garden",
+  "tags": [
+   "cities"
+  ],
+  "closures": [],
+  "elevation_m": 343
+ },
+ {
+  "name": "Guwahati",
+  "tagline": "Gateway to the Northeast, on the Brahmaputra",
+  "tags": [
+   "cities",
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 52
+ },
+ {
+  "name": "Bhubaneswar",
+  "tagline": "The temple city",
+  "tags": [
+   "heritage",
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 44
+ },
+ {
+  "name": "Indore",
+  "tagline": "India's street-food capital",
+  "tags": [
+   "cities"
+  ],
+  "closures": [],
+  "elevation_m": 551
+ },
+ {
+  "name": "Bhopal",
+  "tagline": "The city of lakes",
+  "tags": [
+   "cities"
+  ],
+  "closures": [],
+  "elevation_m": 495
+ },
+ {
+  "name": "Patna",
+  "tagline": "On the banks of the Ganga",
+  "tags": [
+   "cities"
+  ],
+  "closures": [],
+  "elevation_m": 55
+ },
+ {
+  "name": "Nagpur",
+  "tagline": "Oranges & tiger reserves nearby",
+  "tags": [
+   "cities"
+  ],
+  "closures": [],
+  "elevation_m": 311
+ },
+ {
+  "name": "Coimbatore",
+  "tagline": "Gateway to the Nilgiris",
+  "tags": [
+   "cities"
+  ],
+  "closures": [],
+  "elevation_m": 431
+ },
+ {
+  "name": "Thiruvananthapuram",
+  "tagline": "Temples, palaces & nearby beaches",
+  "tags": [
+   "cities",
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 12
+ },
+ {
+  "name": "Goa",
+  "tagline": "Sun, sand & susegād",
+  "tags": [
+   "beaches"
+  ],
+  "closures": [
+   {
+    "months": [
+     6,
+     7,
+     8,
+     9
+    ],
+    "level": "note",
+    "reason": "Monsoon: beach shacks close and water sports are banned"
+   }
+  ],
+  "elevation_m": 65
+ },
+ {
+  "name": "Gokarna",
+  "tagline": "Quiet beaches & a temple town",
+  "tags": [
+   "beaches",
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 10
+ },
+ {
+  "name": "Varkala",
+  "tagline": "Cliff-top cafés & surf",
+  "tags": [
+   "beaches"
+  ],
+  "closures": [],
+  "elevation_m": 48
+ },
+ {
+  "name": "Kovalam",
+  "tagline": "Crescent beaches & a lighthouse",
+  "tags": [
+   "beaches"
+  ],
+  "closures": [],
+  "elevation_m": 50
+ },
+ {
+  "name": "Puri",
+  "tagline": "Temple town by the sea",
+  "tags": [
+   "beaches",
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 10
+ },
+ {
+  "name": "Konark",
+  "tagline": "The Sun Temple's stone chariot",
+  "tags": [
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 14
+ },
+ {
+  "name": "Digha",
+  "tagline": "Kolkata's favourite beach escape",
+  "tags": [
+   "beaches"
+  ],
+  "closures": [],
+  "elevation_m": 10
+ },
+ {
+  "name": "Visakhapatnam",
+  "tagline": "Hills that meet the sea",
+  "tags": [
+   "beaches",
+   "cities"
+  ],
+  "closures": [],
+  "elevation_m": 40
+ },
+ {
+  "name": "Puducherry",
+  "tagline": "French lanes & quiet beaches",
+  "tags": [
+   "beaches",
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 11
+ },
+ {
+  "name": "Mahabalipuram",
+  "tagline": "Shore temples & rock carvings",
+  "tags": [
+   "beaches",
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 3
+ },
+ {
+  "name": "Kanyakumari",
+  "tagline": "Sunrise where three seas meet",
+  "tags": [
+   "beaches",
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 33
+ },
+ {
+  "name": "Rameswaram",
+  "tagline": "Island temple & the Pamban bridge",
+  "tags": [
+   "spiritual",
+   "beaches"
+  ],
+  "closures": [],
+  "elevation_m": 9
+ },
+ {
+  "name": "Port Blair",
+  "tagline": "Turquoise water & island history",
+  "tags": [
+   "beaches"
+  ],
+  "closures": [],
+  "elevation_m": 19
+ },
+ {
+  "name": "Havelock Island",
+  "tagline": "Radhanagar Beach & coral reefs",
+  "tags": [
+   "beaches"
+  ],
+  "closures": [
+   {
+    "months": [
+     6,
+     7,
+     8
+    ],
+    "level": "avoid",
+    "reason": "Rough seas: ferries and water sports are often cancelled"
+   }
+  ],
+  "elevation_m": 39
+ },
+ {
+  "name": "Lakshadweep",
+  "tagline": "Lagoons & coral islands",
+  "tags": [
+   "beaches"
+  ],
+  "closures": [
+   {
+    "months": [
+     6,
+     7,
+     8
+    ],
+    "level": "avoid",
+    "reason": "Monsoon: ships and flights are often disrupted"
+   }
+  ],
+  "elevation_m": 0
+ },
+ {
+  "name": "Diu",
+  "tagline": "Laid-back island by a Portuguese fort",
+  "tags": [
+   "beaches"
+  ],
+  "closures": [],
+  "elevation_m": 19
+ },
+ {
+  "name": "Kochi",
+  "tagline": "Fishing nets & spice-scented lanes",
+  "tags": [
+   "backwaters",
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 6
+ },
+ {
+  "name": "Alleppey",
+  "tagline": "Houseboats on the backwaters",
+  "tags": [
+   "backwaters"
+  ],
+  "closures": [],
+  "elevation_m": 5
+ },
+ {
+  "name": "Kumarakom",
+  "tagline": "Lakeside resorts & a bird sanctuary",
+  "tags": [
+   "backwaters"
+  ],
+  "closures": [],
+  "elevation_m": 9
+ },
+ {
+  "name": "Munnar",
+  "tagline": "Rolling tea estates",
+  "tags": [
+   "mountains",
+   "backwaters"
+  ],
+  "closures": [],
+  "elevation_m": 1461
+ },
+ {
+  "name": "Thekkady",
+  "tagline": "Periyar lake & spice gardens",
+  "tags": [
+   "wildlife",
+   "backwaters"
+  ],
+  "closures": [],
+  "elevation_m": 918
+ },
+ {
+  "name": "Wayanad",
+  "tagline": "Waterfalls, forests & caves",
+  "tags": [
+   "mountains",
+   "wildlife"
+  ],
+  "closures": [],
+  "elevation_m": 746
+ },
+ {
+  "name": "Manali",
+  "tagline": "Snow peaks & café hopping",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [
+   {
+    "months": [
+     12,
+     1,
+     2
+    ],
+    "level": "note",
+    "reason": "Rohtang Pass is closed; snow in town is the draw"
+   }
+  ],
+  "elevation_m": 1878
+ },
+ {
+  "name": "Shimla",
+  "tagline": "Toy train & colonial charm",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 2195
+ },
+ {
+  "name": "Kasol",
+  "tagline": "Riverside cafés in the Parvati valley",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 1546
+ },
+ {
+  "name": "Dharamshala",
+  "tagline": "Monasteries & mountain views",
+  "tags": [
+   "mountains",
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 1316
+ },
+ {
+  "name": "Dalhousie",
+  "tagline": "Pine forests & old churches",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 1990
+ },
+ {
+  "name": "Spiti",
+  "tagline": "High-altitude desert monasteries",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [
+   {
+    "months": [
+     11,
+     12,
+     1,
+     2,
+     3,
+     4
+    ],
+    "level": "avoid",
+    "reason": "Snowbound: most roads, homestays and cafés are shut"
+   }
+  ],
+  "elevation_m": 3674
+ },
+ {
+  "name": "Rishikesh",
+  "tagline": "Ganga, yoga & rafting",
+  "tags": [
+   "mountains",
+   "spiritual"
+  ],
+  "closures": [
+   {
+    "months": [
+     7,
+     8
+    ],
+    "level": "note",
+    "reason": "River rafting is suspended during the monsoon"
+   }
+  ],
+  "elevation_m": 363
+ },
+ {
+  "name": "Haridwar",
+  "tagline": "Ganga aarti at Har Ki Pauri",
+  "tags": [
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 294
+ },
+ {
+  "name": "Mussoorie",
+  "tagline": "The Queen of the Hills",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 2006
+ },
+ {
+  "name": "Nainital",
+  "tagline": "Boating on Naini Lake",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 1966
+ },
+ {
+  "name": "Auli",
+  "tagline": "Ski slopes & Himalayan views",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 2816
+ },
+ {
+  "name": "Jim Corbett",
+  "tagline": "Tiger safaris in the foothills",
+  "tags": [
+   "wildlife"
+  ],
+  "closures": [
+   {
+    "months": [
+     7,
+     8,
+     9
+    ],
+    "level": "closed",
+    "reason": "Most safari zones close for the monsoon (mid-June to October)"
+   }
+  ],
+  "elevation_m": 365
+ },
+ {
+  "name": "Srinagar",
+  "tagline": "Shikaras on Dal Lake",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 1589
+ },
+ {
+  "name": "Gulmarg",
+  "tagline": "Gondola rides & snowy meadows",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 2709
+ },
+ {
+  "name": "Pahalgam",
+  "tagline": "Valleys, rivers & meadows",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 2125
+ },
+ {
+  "name": "Leh",
+  "tagline": "High passes & blue skies",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [
+   {
+    "months": [
+     12,
+     1,
+     2
+    ],
+    "level": "avoid",
+    "reason": "Extreme cold (nights below −10°C); roads closed, fly in only"
+   },
+   {
+    "months": [
+     11,
+     3
+    ],
+    "level": "avoid",
+    "reason": "Winter: very cold, and many hotels and cafés are closed"
+   }
+  ],
+  "elevation_m": 3414
+ },
+ {
+  "name": "Darjeeling",
+  "tagline": "Tea gardens & Kanchenjunga sunrises",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 2100
+ },
+ {
+  "name": "Gangtok",
+  "tagline": "Monasteries & mountain roads",
+  "tags": [
+   "mountains",
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 1487
+ },
+ {
+  "name": "Tawang",
+  "tagline": "A great monastery above the clouds",
+  "tags": [
+   "mountains",
+   "spiritual"
+  ],
+  "closures": [
+   {
+    "months": [
+     1,
+     2
+    ],
+    "level": "avoid",
+    "reason": "Heavy snow can close Sela Pass, the only road in"
+   }
+  ],
+  "elevation_m": 2793
+ },
+ {
+  "name": "Shillong",
+  "tagline": "Umiam Lake & pine-covered hills",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 1436
+ },
+ {
+  "name": "Cherrapunji",
+  "tagline": "Living-root bridges & rain",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 1303
+ },
+ {
+  "name": "Ooty",
+  "tagline": "Nilgiri toy train & tea",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 2235
+ },
+ {
+  "name": "Kodaikanal",
+  "tagline": "Misty lake & pine forests",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 2085
+ },
+ {
+  "name": "Coorg",
+  "tagline": "Coffee estates & waterfalls",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 1136
+ },
+ {
+  "name": "Chikmagalur",
+  "tagline": "Coffee country in the hills",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 1035
+ },
+ {
+  "name": "Lonavala",
+  "tagline": "Monsoon hills & the Karla caves",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 625
+ },
+ {
+  "name": "Mahabaleshwar",
+  "tagline": "Strawberries & valley viewpoints",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 1365
+ },
+ {
+  "name": "Mount Abu",
+  "tagline": "Rajasthan's only hill station",
+  "tags": [
+   "mountains"
+  ],
+  "closures": [],
+  "elevation_m": 1186
+ },
+ {
+  "name": "Jaipur",
+  "tagline": "Palaces in pink",
+  "tags": [
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 431
+ },
+ {
+  "name": "Udaipur",
+  "tagline": "Lakes & lit-up palaces",
+  "tags": [
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 566
+ },
+ {
+  "name": "Jodhpur",
+  "tagline": "The blue city under Mehrangarh",
+  "tags": [
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 220
+ },
+ {
+  "name": "Jaisalmer",
+  "tagline": "Golden fort & desert dunes",
+  "tags": [
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 240
+ },
+ {
+  "name": "Pushkar",
+  "tagline": "Holy lake, ghats & the camel fair",
+  "tags": [
+   "spiritual",
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 505
+ },
+ {
+  "name": "Ranthambore",
+  "tagline": "Tigers among fort ruins",
+  "tags": [
+   "wildlife",
+   "heritage"
+  ],
+  "closures": [
+   {
+    "months": [
+     7,
+     8,
+     9
+    ],
+    "level": "closed",
+    "reason": "Core safari zones close for the monsoon (July to September)"
+   }
+  ],
+  "elevation_m": 294
+ },
+ {
+  "name": "Agra",
+  "tagline": "The Taj at sunrise",
+  "tags": [
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 170
+ },
+ {
+  "name": "Amritsar",
+  "tagline": "The Golden Temple & langar",
+  "tags": [
+   "spiritual",
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 234
+ },
+ {
+  "name": "Mysuru",
+  "tagline": "A palace that glows at night",
+  "tags": [
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 748
+ },
+ {
+  "name": "Hampi",
+  "tagline": "Ruins among giant boulders",
+  "tags": [
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 426
+ },
+ {
+  "name": "Khajuraho",
+  "tagline": "Temple spires carved in stone",
+  "tags": [
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 207
+ },
+ {
+  "name": "Aurangabad",
+  "tagline": "Ajanta & Ellora caves",
+  "tags": [
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 593
+ },
+ {
+  "name": "Madurai",
+  "tagline": "The Meenakshi temple towers",
+  "tags": [
+   "heritage",
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 141
+ },
+ {
+  "name": "Bhuj",
+  "tagline": "The white salt desert of Kutch",
+  "tags": [
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 107
+ },
+ {
+  "name": "Varanasi",
+  "tagline": "Ghats, aartis & old lanes",
+  "tags": [
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 81
+ },
+ {
+  "name": "Ayodhya",
+  "tagline": "Temple town on the Saryu",
+  "tags": [
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 100
+ },
+ {
+  "name": "Mathura",
+  "tagline": "Krishna's birthplace & Vrindavan",
+  "tags": [
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 179
+ },
+ {
+  "name": "Bodh Gaya",
+  "tagline": "Where the Buddha found enlightenment",
+  "tags": [
+   "spiritual",
+   "heritage"
+  ],
+  "closures": [],
+  "elevation_m": 125
+ },
+ {
+  "name": "Ujjain",
+  "tagline": "Mahakaleshwar & the Shipra ghats",
+  "tags": [
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 496
+ },
+ {
+  "name": "Tirupati",
+  "tagline": "The hill-top Venkateswara temple",
+  "tags": [
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 157
+ },
+ {
+  "name": "Shirdi",
+  "tagline": "Sai Baba's town",
+  "tags": [
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 516
+ },
+ {
+  "name": "Nashik",
+  "tagline": "Vineyards & the Godavari ghats",
+  "tags": [
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 584
+ },
+ {
+  "name": "Dwarka",
+  "tagline": "Krishna's temple by the sea",
+  "tags": [
+   "spiritual",
+   "beaches"
+  ],
+  "closures": [],
+  "elevation_m": 11
+ },
+ {
+  "name": "Somnath",
+  "tagline": "Where the temple meets the Arabian Sea",
+  "tags": [
+   "spiritual",
+   "beaches"
+  ],
+  "closures": [],
+  "elevation_m": 12
+ },
+ {
+  "name": "Kaziranga",
+  "tagline": "One-horned rhinos in the grasslands",
+  "tags": [
+   "wildlife"
+  ],
+  "closures": [
+   {
+    "months": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "level": "closed",
+    "reason": "The park closes from May to October (monsoon floods)"
+   }
+  ],
+  "elevation_m": 86
+ },
+ {
+  "name": "Gir",
+  "tagline": "Home of the Asiatic lion",
+  "tags": [
+   "wildlife"
+  ],
+  "closures": [
+   {
+    "months": [
+     7,
+     8,
+     9
+    ],
+    "level": "closed",
+    "reason": "The sanctuary closes for the monsoon (mid-June to mid-October)"
+   }
+  ],
+  "elevation_m": 158
+ },
+ {
+  "name": "Sundarbans",
+  "tagline": "Mangrove creeks & tigers",
+  "tags": [
+   "wildlife",
+   "backwaters"
+  ],
+  "closures": [],
+  "elevation_m": 6
+ },
+ {
+  "name": "Bali",
+  "tagline": "Rice terraces, temples & surf",
+  "tags": [
+   "abroad",
+   "beaches"
+  ],
+  "closures": [],
+  "elevation_m": 20
+ },
+ {
+  "name": "Dubai",
+  "tagline": "Skyscrapers & desert dunes",
+  "tags": [
+   "abroad",
+   "cities"
+  ],
+  "closures": [],
+  "elevation_m": 6
+ },
+ {
+  "name": "Bangkok",
+  "tagline": "Street food & golden temples",
+  "tags": [
+   "abroad",
+   "cities"
+  ],
+  "closures": [],
+  "elevation_m": 4
+ },
+ {
+  "name": "Singapore",
+  "tagline": "Gardens, hawkers & skyline",
+  "tags": [
+   "abroad",
+   "cities"
+  ],
+  "closures": [],
+  "elevation_m": 46
+ },
+ {
+  "name": "Kathmandu",
+  "tagline": "Stupas & Himalayan views",
+  "tags": [
+   "abroad",
+   "mountains",
+   "spiritual"
+  ],
+  "closures": [],
+  "elevation_m": 1301
+ },
+ {
+  "name": "Male",
+  "tagline": "Overwater villas & lagoons",
+  "tags": [
+   "abroad",
+   "beaches"
+  ],
+  "closures": [],
+  "elevation_m": 8
+ }
+]

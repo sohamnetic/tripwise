@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { City, CityOption, Health, JobStatus, Plan, TripRequest } from "./types";
+import type { ChatReply, ChatTurn, City, CityOption, Health, JobStatus, Plan, TripRequest } from "./types";
 
 // In development Vite proxies /api to the local backend; in production VITE_API_URL is the
 // backend's address (e.g. https://tripwise-api.onrender.com). A trailing slash is tolerated.
@@ -40,6 +40,7 @@ export const api = {
     request<{ job_id: string }>("/api/trips", { method: "POST", body: JSON.stringify(body) }),
   job: (id: string) => request<JobStatus>(`/api/jobs/${id}`),
   trip: (id: string) => request<Plan>(`/api/trips/${id}`),
+  chat: (messages: ChatTurn[]) => request<ChatReply>("/api/chat", { method: "POST", body: JSON.stringify({ messages }) }),
 };
 
 export function useHealth() {

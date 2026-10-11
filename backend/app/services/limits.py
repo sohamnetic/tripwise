@@ -12,7 +12,7 @@ from fastapi import Request
 from sqlmodel import delete, select
 
 from ..config import get_settings
-from ..db import PlanRequest, get_session
+from ..db import ChatMessage, PlanRequest, get_session
 from ..models.schemas import TripRequest
 
 WINDOW = timedelta(hours=24)
@@ -51,4 +51,18 @@ def check_and_record(client: str, key: str) -> None:
                 "You can still change the ones you've made; new trips open up again tomorrow."
             )
         s.add(PlanRequest(client=client, trip_key=key, at=now))
+        s.commit()
+
+
+def check_chat(client: str) -> None:
+    """Raises LimitReachedError past the daily chat allowance; otherwise records the message."""
+    limit = get_settings().chat_daily_messages
+    now = datetime.now(timezone.utc)
+    with get_session() as s:
+        s.exec(delete(ChatMessage).where(ChatMessage.at < now - 2 * WINDOW))
+        sent = len(s.exec(select(ChatMessage.id).where(ChatMessage.client == client, ChatMessage.at >= now - WINDOW)).all())
+        if limit and sent >= limit:
+            raise LimitReachedError(f"That's {sent} messages today, the daily limit for this free chat. "
+                                    "Come back tomorrow, or plan a trip directly with the form.")
+        s.add(ChatMessage(client=client, at=now))
         s.commit()

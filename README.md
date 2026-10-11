@@ -27,6 +27,20 @@ India-first, all prices in ₹.
 - A booking checklist (confetti when everything's booked) and package suggestions
 - "Cheaper version" / "More comfort" one-click replanning, a share link and print-to-PDF
 
+## Ask Tripwise (chat)
+
+The 💬 button on every page opens a chat that suggests where to go and when, within a budget:
+"Somewhere cool in May under ₹40k for 2 from Kolkata", "Is Goa good in July?".
+
+- **Seasons** come from six years of real daily weather per destination (`backend/app/data/climate.json`,
+  built by `scripts/build_climate.py` from Open-Meteo) plus known closures (`data/destinations.json`).
+- **Costs** are rough ranges from the planner's own estimators (`services/recommend.py`); every card has a
+  **Plan this trip** button that fills the planner for exact prices.
+- **Google Gemini** (free key, `GEMINI_API_KEY`) does the talking, but it must call Tripwise's tools for
+  every number, and the cards are built from those tool results. Without a key, past `GEMINI_DAILY_LIMIT`,
+  or if Gemini fails, the chat answers in **simple mode** from the same data.
+- Each visitor gets `CHAT_DAILY_MESSAGES` messages a day (default 30).
+
 ## Install it as an app
 
 Tripwise is a Progressive Web App, so it installs from the browser. There's no app store.

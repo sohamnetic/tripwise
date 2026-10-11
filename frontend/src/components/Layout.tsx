@@ -1,5 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 import AppUpdates from "./AppUpdates";
+import ChatWidget from "./ChatWidget";
 import Footer from "./Footer";
 import { InstallBanner } from "./InstallApp";
 
@@ -36,6 +37,7 @@ export default function Layout() {
       <div className="no-print hide-while-typing pointer-events-none fixed inset-x-3 bottom-3 z-[2000] flex flex-col gap-2 sm:inset-x-auto sm:bottom-4 sm:right-4 sm:w-[380px]">
         <AppUpdates />
         <InstallBanner />
+        <ChatWidget />
       </div>
     </div>
   );
