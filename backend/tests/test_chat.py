@@ -140,7 +140,7 @@ def test_gemini_uses_our_tools_and_the_cards_carry_our_numbers(monkeypatch):
     ])
     sent = []
 
-    def fake_gemini(contents, today):
+    def fake_gemini(contents, today, timeout=25):
         sent.append([dict(c) for c in contents])
         return next(replies)
 
@@ -157,7 +157,7 @@ def test_gemini_uses_our_tools_and_the_cards_carry_our_numbers(monkeypatch):
 def test_gemini_failure_falls_back_to_simple_mode(monkeypatch):
     monkeypatch.setattr(get_settings(), "gemini_api_key", "test-key")
 
-    def broken(contents, today):
+    def broken(contents, today, timeout=25):
         raise chat.GeminiUnavailable("HTTP 503")
 
     with patch.object(chat, "_gemini", broken):
@@ -227,7 +227,7 @@ def test_tool_call_ids_are_echoed_back(monkeypatch):
         {"role": "model", "parts": [{"text": "December is great for Goa."}]},
     ])
     sent = []
-    with patch.object(chat, "_gemini", lambda contents, today: (sent.append(contents), next(replies))[1]):
+    with patch.object(chat, "_gemini", lambda contents, today, timeout=25: (sent.append(contents), next(replies))[1]):
         chat.answer(_ask("Goa in December?"), TODAY)
     assert sent[-1][-1]["parts"][0]["functionResponse"]["id"] == "call_1"
 

@@ -26,6 +26,7 @@ def clean():
     with get_session() as s:
         s.exec(delete(RouteFare))
         s.commit()
+    fare_memory.clear_cache()
 
 
 def _flight(price, service="6E 123 · non-stop", minutes=150, estimate=False):
@@ -58,6 +59,7 @@ def test_other_direction_is_used_and_old_or_estimated_fares_are_not():
         s.add(RouteFare(id="DEL-CCU-old", route="DEL-CCU", travel_date=DAY, cheapest=4000, duration_min=130,
                         seen_at=datetime.now(timezone.utc) - timedelta(days=200)))
         s.commit()
+    fare_memory.clear_cache()
     assert fare_memory.typical("DEL", "CCU") is None
 
 

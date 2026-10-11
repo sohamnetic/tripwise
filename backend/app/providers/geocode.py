@@ -15,6 +15,7 @@ class UnknownCityError(ValueError):
 
 
 @lru_cache
+@lru_cache
 def _cities() -> list[dict]:
     return json.loads(_DATA.read_text(encoding="utf-8"))
 

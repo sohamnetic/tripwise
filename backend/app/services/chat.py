@@ -11,6 +11,7 @@ group size, origin and interests from the message itself and answers from the sa
 import json
 import logging
 import re
+import time
 from datetime import date, timedelta
 
 import httpx
@@ -25,6 +26,8 @@ log = logging.getLogger(__name__)
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 MAX_TOOL_ROUNDS = 4
 MAX_CARDS = 4
+# Vercel stops a request at 60s; leave room for simple mode and the database after Gemini.
+AI_TIME_BUDGET_S = 40
 HISTORY_TURNS = 12
 TURN_CHARS = 600
 
@@ -158,7 +161,7 @@ class GeminiUnavailable(Exception):
     pass
 
 
-def _gemini(contents: list[dict], today: date) -> dict:
+def _gemini(contents: list[dict], today: date, timeout: float = 25) -> dict:
     settings = get_settings()
     if not settings.gemini_api_key:
         raise GeminiUnavailable("no key")
@@ -173,7 +176,7 @@ def _gemini(contents: list[dict], today: date) -> dict:
         "generationConfig": {"temperature": 0.5, "maxOutputTokens": 2048},
     }
     try:
-        with httpx.Client(timeout=25) as client:
+        with httpx.Client(timeout=timeout) as client:
             r = client.post(GEMINI_URL.format(model=settings.gemini_model), json=body,
                             headers={"x-goog-api-key": settings.gemini_api_key})
     except httpx.HTTPError as e:
@@ -189,8 +192,12 @@ def _gemini(contents: list[dict], today: date) -> dict:
 def chat_with_gemini(history: list[ChatTurn], today: date) -> ChatReply:
     contents = [{"role": "user" if t.role == "user" else "model", "parts": [{"text": t.text}]} for t in history]
     cards: dict[str, Suggestion] = {}
+    deadline = time.monotonic() + AI_TIME_BUDGET_S
     for _ in range(MAX_TOOL_ROUNDS):
-        content = _gemini(contents, today)
+        left = deadline - time.monotonic()
+        if left < 3:
+            raise GeminiUnavailable("out of time")
+        content = _gemini(contents, today, timeout=min(25, left))
         parts = content.get("parts") or []
         calls = [p["functionCall"] for p in parts if "functionCall" in p]
         if not calls:

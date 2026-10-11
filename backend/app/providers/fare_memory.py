@@ -3,6 +3,8 @@ estimate comes from real prices seen on it instead of a distance formula."""
 
 import re
 import statistics
+import time
+from collections import defaultdict
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 
@@ -12,6 +14,29 @@ from ..db import RouteFare, get_session
 from ..models.schemas import TransportOption
 
 MAX_AGE_DAYS = 90  # fares change with season and demand; older sightings are dropped
+# Estimating a hundred destinations for one chat message asks for a hundred routes; one query and a
+# few minutes in memory beats a database round trip per route (slow from Vercel to Neon).
+CACHE_SECONDS = 300
+_cache: tuple[float, dict[str, list[tuple[int, int]]]] | None = None
+
+
+def clear_cache() -> None:
+    global _cache
+    _cache = None
+
+
+def _recent() -> dict[str, list[tuple[int, int]]]:
+    """route → [(cheapest, duration_min)] for every recent sighting, cached briefly."""
+    global _cache
+    if _cache and time.monotonic() - _cache[0] < CACHE_SECONDS:
+        return _cache[1]
+    since = datetime.now(timezone.utc) - timedelta(days=MAX_AGE_DAYS)
+    by_route: dict[str, list[tuple[int, int]]] = defaultdict(list)
+    with get_session() as s:
+        for r in s.exec(select(RouteFare).where(RouteFare.seen_at >= since)).all():
+            by_route[r.route].append((r.cheapest, r.duration_min))
+    _cache = (time.monotonic(), dict(by_route))
+    return _cache[1]
 
 
 @dataclass
@@ -41,6 +66,7 @@ def remember(frm: str, to: str, day: date, options: list[TransportOption]) -> No
             duration_min=int(statistics.median(o.duration_min for o in best)), seen_at=now,
         ))
         s.commit()
+    clear_cache()
 
 
 def _stops(service: str) -> int:
@@ -54,15 +80,12 @@ def _stops(service: str) -> int:
 def typical(frm: str, to: str) -> TypicalFare | None:
     """The median of the cheapest fares seen on this route (either direction, since fares
     each way are usually similar), or None if no live search has covered it."""
-    since = datetime.now(timezone.utc) - timedelta(days=MAX_AGE_DAYS)
-    with get_session() as s:
-        rows = s.exec(select(RouteFare).where(RouteFare.route == _route(frm, to), RouteFare.seen_at >= since)).all()
-        if not rows:
-            rows = s.exec(select(RouteFare).where(RouteFare.route == _route(to, frm), RouteFare.seen_at >= since)).all()
+    recent = _recent()
+    rows = recent.get(_route(frm, to)) or recent.get(_route(to, frm))
     if not rows:
         return None
     return TypicalFare(
-        price=int(statistics.median(r.cheapest for r in rows)),
-        duration_min=int(statistics.median(r.duration_min for r in rows)),
+        price=int(statistics.median(price for price, _ in rows)),
+        duration_min=int(statistics.median(minutes for _, minutes in rows)),
         samples=len(rows),
     )
